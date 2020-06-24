@@ -1,0 +1,16 @@
+{% block content %}
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend>Click</legend>
+                {{ form }}
+            </fieldset>
+            <button type="submit" name="button"></button>
+        </form>
+        <div class="border-top pt-3">
+            <a class="text-muted"href="#">sing-in</a>
+
+        </div>
+    </div>
+{% endblock %}
