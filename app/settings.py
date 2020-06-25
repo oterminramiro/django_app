@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'dashboard.apps.DashboardConfig',
+    'orders_api.apps.OrdersApiConfig',
+	'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +83,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

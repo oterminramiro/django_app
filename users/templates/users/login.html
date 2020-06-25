@@ -19,48 +19,23 @@
 	  		{% endif %}
 			<div class="row mx-auto mt-5" style="width:75%">
 				<div class="col-md-6 login-form-1">
-					<h3>Register</h3>
+					<h3>Login</h3>
 					<form method="post">
 						{% csrf_token %}
 						<div class="form-group">
-							{{ form.username.label }}
-							{{ form.username }}
+							<input type="text" name="username" value="">
 						</div>
 						<div class="form-group">
-							{{ form.email.label }}
-							{{ form.email }}
+							<input type="text" name="password" value="">
 						</div>
 						<div class="form-group">
-							{{ form.password1.label }}
-							{{ form.password1 }}
+							<input type="submit" class="btnSubmit" value="Login" />
 						</div>
 						<div class="form-group">
-							{{ form.password2.label }}
-							{{ form.password2 }}
-						</div>
-						
-						{% if form.errors %}
-						    {% for field in form %}
-						        {% for error in field.errors %}
-						            <div class="alert alert-danger">
-						                <strong>{{ error|escape }}</strong>
-						            </div>
-						        {% endfor %}
-						    {% endfor %}
-						    {% for error in form.non_field_errors %}
-						        <div class="alert alert-danger">
-						            <strong>{{ error|escape }}</strong>
-						        </div>
-						    {% endfor %}
-						{% endif %}
-
-						<div class="form-group">
-							<input type="submit" class="btnSubmit" value="Register" />
+							<a href="/register" class="ForgetPwd">Register</a>
 						</div>
 
-						<div class="form-group">
-							<a href="/login" class="ForgetPwd">Login</a>
-						</div>
+						{{ form.errors }}
 					</form>
 				</div>
 			</div>
