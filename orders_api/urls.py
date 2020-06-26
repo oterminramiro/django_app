@@ -1,14 +1,13 @@
 from django.urls import include, path
-from rest_framework import routers
+from rest_framework.routers import DefaultRouter
 from . import views
 
-router = routers.DefaultRouter()
-router.register(r'items', views.ItemViewSet)
-router.register(r'status', views.StatusViewSet)
-router.register(r'store', views.StoreViewSet)
-router.register(r'customer', views.CustomerViewSet)
-router.register(r'order', views.OrderViewSet)
-router.register(r'orderitem', views.OrderItemViewSet)
+router = DefaultRouter()
+
+router.register(r'items', views.ItemViewSet, basename="item")
+router.register(r'store', views.StoreViewSet, basename="store")
+router.register(r'customer', views.CustomerViewSet, basename="customer")
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

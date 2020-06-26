@@ -24,7 +24,7 @@ urlpatterns = [
     path('register/', users_views.register, name='register'),
     path('login/', users_views.login, name='login'),
 
-    path('main/', dashboard_views.main, name='main'),
+    path('', dashboard_views.main, name='main'),
 
 	path('api/', include('orders_api.urls')),
 ]
