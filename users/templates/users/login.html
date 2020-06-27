@@ -1,48 +1,123 @@
-<!doctype html>
-<html lang="en">
-  	<head>
-    	<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% load static %}
 
-    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<!DOCTYPE html>
+<html>
 
-    	<title>Hello, world!</title>
-  	</head>
-  	<body>
-	  	{% block content %}
-	  		{% if messages %}
-	  			{%  for message in messages %}
-	  				<div class="alert alert-{{ message.tag }}">
-	  					{{ message }}
-	  				</div>
-	  			{% endfor %}
-	  		{% endif %}
-			<div class="row mx-auto mt-5" style="width:75%">
-				<div class="col-md-6 login-form-1">
-					<h3>Login</h3>
-					<form method="post">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Argon Dashboard - Free Dashboard for Bootstrap 4</title>
+	<link rel="icon" href="{% static "img/brand/favicon.png" %}" type="image/png">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+	<link rel="stylesheet" href="{% static "vendor/nucleo/css/nucleo.css" %}" type="text/css">
+	<link rel="stylesheet" href="{% static "vendor/@fortawesome/fontawesome-free/css/all.min.css" %}" type="text/css">
+	<link rel="stylesheet" href="{% static "css/argon.css" %}" type="text/css">
+</head>
+
+<body>
+
+	{% block content %}
+	<div class="container mt-2 py-5">
+		<div class="row justify-content-center">
+		<div class="col-lg-5 col-md-7">
+			<div class="card bg-secondary border-0 mb-0">
+			<div class="card-header bg-transparent pb-5">
+				<div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
+					<div class="btn-wrapper text-center">
+						<a href="#" class="btn btn-neutral btn-icon">
+							<span class="btn-inner--icon"><img src="{% static "img/icons/common/github.svg" %}"></span>
+							<span class="btn-inner--text">Github</span>
+						</a>
+						<a href="#" class="btn btn-neutral btn-icon">
+							<span class="btn-inner--icon"><img src="{% static "img/icons/common/google.svg" %}"></span>
+							<span class="btn-inner--text">Google</span>
+						</a>
+					</div>
+				</div>
+				<div class="card-body px-lg-5 py-lg-5">
+					<div class="text-center text-muted mb-4">
+					<small>Or sign in with credentials</small>
+					</div>
+					<form role="form" method="post" action="/users/login/">
 						{% csrf_token %}
-						<div class="form-group">
-							<input type="text" name="username" value="">
+						{% if messages %}
+							{%  for message in messages %}
+								<div class="alert alert-{{ message.tag }}">
+									{{ message }}
+								</div>
+							{% endfor %}
+						{% endif %}
+
+						<div class="form-group mb-3">
+							<div class="input-group input-group-merge input-group-alternative">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="ni ni-email-83"></i></span>
+								</div>
+								<input class="form-control" name="username" placeholder="Username" type="text">
+							</div>
 						</div>
 						<div class="form-group">
-							<input type="text" name="password" value="">
+							<div class="input-group input-group-merge input-group-alternative">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+								</div>
+								<input class="form-control" name="password" placeholder="Password" type="password">
+							</div>
 						</div>
-						<div class="form-group">
-							<input type="submit" class="btnSubmit" value="Login" />
-						</div>
-						<div class="form-group">
-							<a href="/register" class="ForgetPwd">Register</a>
+						<!--
+<div class="custom-control custom-control-alternative custom-checkbox">
+							<input class="custom-control-input" id="customCheckLogin" type="checkbox">
+							<label class="custom-control-label" for=" customCheckLogin">
+								<span class="text-muted">Remember me</span>
+							</label>
+						</div>-->
+
+
+						<div class="text-center">
+							<button type="submit" class="btn btn-primary my-4">Sign in</button>
 						</div>
 
-						{{ form.errors }}
+						<div class="text-muted font-italic">
+							{% if form.errors %}
+								{% for field in form %}
+									{% for error in field.errors %}
+										<div class="alert alert-danger">
+											<strong>{{ error|escape }}</strong>
+										</div>
+									{% endfor %}
+								{% endfor %}
+								{% for error in form.non_field_errors %}
+									<div class="alert alert-danger">
+										<strong>{{ error|escape }}</strong>
+									</div>
+								{% endfor %}
+							{% endif %}
+						</div>
+
 					</form>
 				</div>
 			</div>
-	  	{% endblock %}
+			<div class="row mt-3">
+			<div class="col-6">
+				<a href="#" class="text-light"><small>Forgot password?</small></a>
+			</div>
+			<div class="col-6 text-right">
+				<a href="#" class="text-light"><small>Create new account</small></a>
+			</div>
+			</div>
+		</div>
+		</div>
+	</div>
+	{% endblock %}
 
-	    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-	</body>
+	<script src="{% static "vendor/jquery/dist/jquery.min.js" %}"></script>
+	<script src="{% static "vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+	<script src="{% static "vendor/js-cookie/js.cookie.js" %}"></script>
+	<script src="{% static "vendor/jquery.scrollbar/jquery.scrollbar.min.js" %}"></script>
+	<script src="{% static "vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js" %}"></script>
+	<script src="{% static "vendor/chart.js/dist/Chart.min.js" %}"></script>
+	<script src="{% static "vendor/chart.js/dist/Chart.extension.js" %}"></script>
+	<script src="{% static "js/argon.js" %}"></script>
+</body>
+
 </html>

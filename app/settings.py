@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'utils.apps.UtilsConfig',
     'users.apps.UsersConfig',
     'dashboard.apps.DashboardConfig',
     'orders_api.apps.OrdersApiConfig',
+    'backoffice.apps.BackofficeConfig',
 	'rest_framework',
 ]
 
@@ -127,5 +129,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"), 
+    os.path.join(BASE_DIR, "static"),
 ]
