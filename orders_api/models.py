@@ -24,7 +24,7 @@ class Item(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100)
+    phone = models.CharField(unique=True,max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

@@ -1,57 +1,32 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-# Create your views here.
+from django.http import JsonResponse
+
+from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .serializers import StatusSerializer, StoreSerializer, ItemSerializer, CustomerSerializer, OrderSerializer, OrderItemSerializer
 from .models import Status, Store, Item, Customer, Order, OrderItem
 
+# GET ALL USERS // POST FOR CREATE
+class CustomerList(generics.ListCreateAPIView):
+	queryset = Customer.objects.all()
+	serializer_class = CustomerSerializer
+# GET A SINGLE USER BY SEARCHING FOR PHONE
+class CustomerExist(generics.RetrieveAPIView):
+	queryset = Customer.objects.all()
+	serializer_class = CustomerSerializer
+	lookup_field = 'phone'
 
-# class ItemViewSet(viewsets.ViewSet):
-    # def list(self, request):
-        # queryset = Item.objects.all()
-        # serializer = ItemSerializer(queryset, many=True)
-        # return Response(serializer.data)
 
-#
-    # def retrieve(self, request, pk=None):
-        # queryset = User.objects.all()
-        # user = get_object_or_404(queryset, pk=pk)
-        # serializer = UserSerializer(user)
-
-class StoreViewSet(viewsets.ViewSet):
-	def list(self,request):
-		queryset = Store.objects.all()
-		serializer = StoreSerializer(queryset, many=True)
-		return Response(serializer.data)
-
-	def retrieve(self, request, pk=None):
-		queryset = Store.objects.all()
-		item = get_object_or_404(queryset, pk=pk)
-		serializer = StoreSerializer(item)
-		return Response(serializer.data)
-
-class ItemViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Item.objects.all()
-        serializer = ItemSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Item.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = ItemSerializer(item)
-        return Response(serializer.data)
-
-class CustomerViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Customer.objects.all()
-        serializer = CustomerSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Customer.objects.all()
-        item = get_object_or_404(queryset, pk=pk)
-        serializer = CustomerSerializer(item)
-        return Response(serializer.data)
+# GET ALL ITEMS
+class ItemList(generics.ListAPIView):
+	queryset = Item.objects.all()
+	serializer_class = ItemSerializer
+# GET A SINGLE ITEM BY PK
+class ItemExist(generics.RetrieveAPIView):
+	queryset = Item.objects.all()
+	serializer_class = ItemSerializer
