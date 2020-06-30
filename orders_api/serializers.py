@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Status, Store, Item, Customer, Order, OrderItem
+from .models import Status, Store, Item, Customer, Order, OrderItem, CustomerCode
 
 class StatusSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -41,3 +41,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = OrderItem
 		fields = ('customer', 'item', 'quantity', 'price', 'created', 'updated')
+
+class CustomerCodeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomerCode
+		fields = ('customer', 'code')
