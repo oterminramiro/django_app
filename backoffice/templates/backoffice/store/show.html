@@ -47,15 +47,8 @@
 							{{ store.created }}
 						</td>
 						<td class="text-left">
-							<div class="dropdown">
-								<a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<i class="fas fa-ellipsis-v"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-								<a class="dropdown-item" href="/backoffice/store_update/{{ store.id }}">Edit</a>
-								<a class="dropdown-item" href="/backoffice/store_delete/{{ store.id }}">Delete</a>
-								</div>
-							</div>
+							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/store_edit/{{ store.id }}">Edit</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/store_destroy/{{ store.id }}">Delete</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -87,10 +80,12 @@
 								<span class="sr-only">Next</span>
 							</a>
 						</li>
-						</ul>
+					</ul>
 				</nav>
 			</div>
 		</div>
 	</div>
 </div>
+
+<center><a href="/backoffice/store_add" class="btn btn-primary">Add New Record</a></center>
 {% endblock %}

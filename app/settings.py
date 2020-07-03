@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'orders_api.apps.OrdersApiConfig',
     'backoffice.apps.BackofficeConfig',
-	'rest_framework',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

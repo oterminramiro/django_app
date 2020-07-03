@@ -1,33 +1,45 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from orders_api.models import Status, Store, Item, Customer, Order, OrderItem
+from .forms import StoreForm
 
-# Create your views here.
-def store_index(request):
-	stores = Store.objects.all()
-	return render(request, 'backoffice/stores.html', {'stores': stores})
+class StoreCrud(object):
 
-def store_update(request, store_id):
-	store_id = int(store_id)
-	try:
-		store_sel = Store.objects.get(id = store_id)
-	except store.DoesNotExist:
-		return redirect('store_index')
+	def store_add(request):
+		if request.method == "POST":
+			form = StoreForm(request.POST)
+			if form.is_valid():
+				try:
+					form.save()
+					return redirect('/backoffice/store_show')
+				except:
+					pass
+		else:
+			form = StoreForm()
 
-	store_form = storeCreate(request.POST or None, instance = store_sel)
-	
-	if store_form.is_valid():
-		store_form.save()
-		return redirect('store_index')
+		return render(request,'backoffice/store/add.html',{'form':form})
 
-	return render(request, 'store/upload_form.html', {'upload_form':store_form})
+	def store_show(request):
+		stores = Store.objects.all()
+		return render(request,"backoffice/store/show.html",{'stores':stores})
 
-def store_delete(request, store_id):
-	store_id = int(store_id)
+	# form para editar
+	def store_edit(request, id):
+		store = Store.objects.get(id=id)
+		return render(request,'backoffice/store/edit.html', {'store':store})
 
-	try:
-		store_sel = store.objects.get(id = store_id)
-	except store.DoesNotExist:
-		return redirect('store_index')
+	# procesado de datos
+	def store_update(request, id):
+		if request.method == "POST":
+			store = Store.objects.get(id=id)
+			form = StoreForm(request.POST, instance = store)
+			if form.is_valid():
+				form.save()
+				return redirect("/backoffice/store_show")
+			else:
+				context = {'store': store, 'form':form}
+				return render(request, 'backoffice/store/edit.html', context)
 
-	store_sel.delete()
-	return redirect('store_index')
+	def store_destroy(request, id):
+		store = Store.objects.get(id=id)
+		store.delete()
+		return redirect("/backoffice/store_show")

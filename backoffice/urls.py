@@ -1,10 +1,13 @@
 from django.conf.urls import url
+from django.urls import include, path
 from . import views
 
 app_name = 'backoffice'
 
-urlpatterns=[
-    url(r'^store_index/$', views.store_index, name='store_index'),
-    url(r'^store_update/{pk}/$', views.store_update, name='store_update'),
-    url(r'^store_delete/{pk}/$', views.store_delete, name='store_delete'),
+urlpatterns = [
+	path('store_show',views.StoreCrud.store_show),
+	path('store_add', views.StoreCrud.store_add),
+	path('store_edit/<int:id>', views.StoreCrud.store_edit),
+	path('store_update/<int:id>', views.StoreCrud.store_update),
+	path('store_destroy/<int:id>', views.StoreCrud.store_destroy),
 ]
