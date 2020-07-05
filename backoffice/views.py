@@ -25,19 +25,18 @@ class StoreCrud(object):
 	# form para editar
 	def store_edit(request, id):
 		store = Store.objects.get(id=id)
-		return render(request,'backoffice/store/edit.html', {'store':store})
 
-	# procesado de datos
-	def store_update(request, id):
 		if request.method == "POST":
-			store = Store.objects.get(id=id)
 			form = StoreForm(request.POST, instance = store)
 			if form.is_valid():
 				form.save()
 				return redirect("/backoffice/store_show")
-			else:
-				context = {'store': store, 'form':form}
-				return render(request, 'backoffice/store/edit.html', context)
+		else:
+			form = StoreForm(instance = store)
+
+		context = {'form':form, 'store':store}
+
+		return render(request,'backoffice/store/edit.html', context)
 
 	def store_destroy(request, id):
 		store = Store.objects.get(id=id)

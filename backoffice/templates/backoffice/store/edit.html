@@ -6,20 +6,20 @@
 <div class="card mt-5 mx-auto" style="width:50%">
 	<div class="card-body">
 		{% if form.errors %}
-		    {% for field in form %}
-		        {% for error in field.errors %}
-		            <div class="alert alert-danger">
-		                <strong>{{ error|escape }}</strong>
-		            </div>
-		        {% endfor %}
-		    {% endfor %}
-		    {% for error in form.non_field_errors %}
-		        <div class="alert alert-danger">
-		            <strong>{{ error|escape }}</strong>
-		        </div>
-		    {% endfor %}
+			{% for field in form %}
+				{% for error in field.errors %}
+					<div class="alert alert-danger">
+						<strong>error field {{ error|escape }}</strong>
+					</div>
+				{% endfor %}
+			{% endfor %}
+			{% for error in form.non_field_errors %}
+				<div class="alert alert-danger">
+					<strong>{{ error|escape }}</strong>
+				</div>
+			{% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/store_update/{{store.id}}">
+		<form method="POST" class="" action="/backoffice/store_edit/{{store.id}}">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -28,25 +28,8 @@
 						<h3>Update Details</h3>
 					</div>
 				</div>
-				<div class="mx-auto" style="width:75%">
-					<div class="form-group">
-						<label class=" col-form-label">Status:</label>
-						<div class="">
-							<input type="text" class="form-control" name="status" id="status" required maxlength="60" value="{{ store.status.name }}"/>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class=" col-form-label">Name:</label>
-						<div class="">
-							<input type="text" class="form-control" name="name" id="name" required maxlength="100" value="{{ store.name }}" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class=" col-form-label">Address:</label>
-						<div class="">
-							<input type="addres" class="form-control" name="address" id="address" required maxlength="656" value="{{ store.address }}" />
-						</div>
-					</div>
+				<div class="mx-auto mb-3" style="width:75%">
+					{{ form }}
 				</div>
 				<div class="form-group row">
 					<div class="col-sm-12 text-center">

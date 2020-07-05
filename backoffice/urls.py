@@ -8,6 +8,5 @@ urlpatterns = [
 	path('store_show',views.StoreCrud.store_show),
 	path('store_add', views.StoreCrud.store_add),
 	path('store_edit/<int:id>', views.StoreCrud.store_edit),
-	path('store_update/<int:id>', views.StoreCrud.store_update),
 	path('store_destroy/<int:id>', views.StoreCrud.store_destroy),
 ]

@@ -7,8 +7,6 @@ class StoreForm(forms.ModelForm):
 		for visible in self.visible_fields():
 			visible.field.widget.attrs['class'] = 'form-control'
 
-	Status = forms.ModelChoiceField(queryset=Status.objects.all())
-
 	class Meta:
 		model = Store
 		fields = "__all__"
