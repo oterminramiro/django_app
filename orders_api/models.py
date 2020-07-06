@@ -16,6 +16,9 @@ class Store(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 
+	def __str__(self):
+		return self.name
+
 class Item(models.Model):
 	status = models.ForeignKey(Status, on_delete=models.PROTECT)
 	store = models.ForeignKey(Store, on_delete=models.PROTECT)

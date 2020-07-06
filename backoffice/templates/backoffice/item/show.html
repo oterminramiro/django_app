@@ -14,15 +14,16 @@
 				<table class="table align-items-center table-flush">
 					<thead class="thead-light">
 						<tr>
-							<th scope="col" class="sort" data-sort="name">Store name</th>
-							<th scope="col" class="sort" data-sort="addres">Address</th>
+							<th scope="col" class="sort" data-sort="name">Item name</th>
+							<th scope="col" class="sort" data-sort="addres">Store</th>
+							<th scope="col" class="sort" data-sort="addres">Price</th>
 							<th scope="col" class="sort" data-sort="status">Status</th>
 							<th scope="col" class="sort" data-sort="created">Created</th>
 							<th scope="col" class="sort" data-sort="action">Action</th>
 						</tr>
 					</thead>
 					<tbody class="list">
-					{% for store in stores %}
+					{% for item in items %}
 					<tr>
 						<th scope="row">
 							<div class="media align-items-center">
@@ -30,25 +31,28 @@
 									<img alt="Store logo" src="{% static "/img/theme/vue.jpg" %}">
 								</a>
 								<div class="media-body">
-									<span class="name mb-0 text-sm">{{ store.name }}</span>
+									<span class="name mb-0 text-sm">{{ item.name }}</span>
 								</div>
 							</div>
 						</th>
 						<td class="budget">
-							{{ store.address }}
+							{{ item.store.name }}
+						</td>
+						<td class="budget">
+							{{ item.price }}
 						</td>
 						<td>
 							<span class="badge badge-dot mr-4">
 								<i class="bg-success"></i>
-								<span class="status">{{ store.status.name }}</span>
+								<span class="status">{{ item.status.name }}</span>
 							</span>
 						</td>
 						<td>
-							{{ store.created }}
+							{{ item.created }}
 						</td>
 						<td class="text-left">
-							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/store_edit/{{ store.id }}">Edit</a>
-							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/store_destroy/{{ store.id }}">Delete</a>
+							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/item_edit/{{ item.id }}">Edit</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/item_destroy/{{ item.id }}">Delete</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -87,5 +91,5 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/store_add" class="btn btn-primary">Add New Record</a></center>
+<center><a href="/backoffice/item_add" class="btn btn-primary">Add New Record</a></center>
 {% endblock %}
