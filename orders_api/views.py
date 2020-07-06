@@ -73,7 +73,7 @@ class ItemList(generics.ListAPIView):
 			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
 		except Exception as e:
 			return Response(str(e))
-			
+
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
@@ -84,6 +84,7 @@ class ItemList(generics.ListAPIView):
 			return Response('Customer not found')
 
 		return Response('server error')
+		
 # GET A SINGLE ITEM BY PK
 class ItemExist(generics.RetrieveAPIView):
 	queryset = Item.objects.all()
