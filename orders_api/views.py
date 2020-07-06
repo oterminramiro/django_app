@@ -7,8 +7,8 @@ from django.core import serializers
 import jwt
 import random
 
-from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer
-from .models import Item, Customer
+from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer
+from .models import Item, Customer, Store, Order, OrderItem
 from .models import CustomerCode as CustomerCodeModel
 
 # GET ALL USERS // POST FOR CREATE
@@ -68,7 +68,6 @@ class CustomerLogin(APIView):
 # GET ALL ITEMS
 class ItemList(generics.ListAPIView):
 	def get(self,request):
-
 		try:
 			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
 		except Exception as e:
@@ -84,8 +83,64 @@ class ItemList(generics.ListAPIView):
 			return Response('Customer not found')
 
 		return Response('server error')
-		
+
 # GET A SINGLE ITEM BY PK
 class ItemExist(generics.RetrieveAPIView):
 	queryset = Item.objects.all()
 	serializer_class = ItemSerializer
+
+# GET ALL ITEMS
+class StoreList(generics.ListAPIView):
+	def get(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Store.objects.all()
+			serializer = StoreSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
+
+# GET A SINGLE ITEM BY PK
+class StoreExist(generics.RetrieveAPIView):
+	queryset = Store.objects.all()
+	serializer_class = StoreSerializer
+
+class OrderCreate(APIView):
+	def post(self, request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			if request.data:
+				order = Order.objects.create(customer_id = customer.id)
+				if order:
+					data = request.data['Items']
+					for items in data:
+						single_item = Item.objects.filter(id=items['ItemId'], store=items['StoreId']).first()
+
+						if not single_item:
+							return Response('Item not found')
+						else:
+							quantity = items['Quantity']
+							price_item = int(single_item.price) * int(quantity)
+							order_item = OrderItem.objects.create(customer_id = customer.id, price = price_item, quantity = quantity, item_id = single_item.id)
+
+					return Response('Order created')
+			else:
+				return Response('Post data null')
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
