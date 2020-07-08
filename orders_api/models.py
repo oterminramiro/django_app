@@ -8,8 +8,24 @@ class Status(models.Model):
 	def __str__(self):
 		return self.name
 
+class PaymentMethod(models.Model):
+	name = models.CharField(max_length=100)
+	key = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name
+
+class ShippingMethod(models.Model):
+	name = models.CharField(max_length=100)
+	key = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name
+
 class Organization(models.Model):
 	status = models.ForeignKey(Status, on_delete=models.PROTECT)
+	paymentmethod = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT)
+	shippingmethod = models.ForeignKey(ShippingMethod, on_delete=models.PROTECT)
 	name = models.CharField(max_length=100)
 	slug = models.CharField(max_length=100)
 	created = models.DateTimeField(auto_now_add=True)
@@ -63,6 +79,12 @@ class OrderItem(models.Model):
 	item = models.ForeignKey(Item, on_delete=models.PROTECT)
 	quantity = models.CharField(max_length=100)
 	price = models.CharField(max_length=100)
+	created = models.DateTimeField(auto_now_add=True)
+	updated = models.DateTimeField(auto_now=True)
+
+class OrderItemLog(models.Model):
+	orderitem = models.ForeignKey(OrderItem, on_delete=models.PROTECT, related_name="orderitem")
+	status = models.ForeignKey(OrderItemStatus, on_delete=models.PROTECT)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from orders_api.models import Status, Organization, Store, Item
+from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog
 from .forms import OrganizationForm, StoreForm, ItemForm
 
 
 from utils.views import is_auth
 
 class OrganizationCrud(object):
+
 	def organization_show(request):
 		if not (is_auth(request)): return redirect('/users/login')
 		organization = Organization.objects.all()
@@ -48,7 +49,6 @@ class OrganizationCrud(object):
 		organization.delete()
 		return redirect("/backoffice/organization_show")
 
-
 class StoreCrud(object):
 
 	def store_show(request, orgid):
@@ -78,7 +78,6 @@ class StoreCrud(object):
 		context = {'form':form , 'orgid': orgid}
 		return render(request,'backoffice/store/add.html',context)
 
-	# form para editar
 	def store_edit(request, id):
 
 		if not (is_auth(request)): return redirect('/users/login')
@@ -118,9 +117,10 @@ class ItemCrud(object):
 	def item_show(request, storeid):
 
 		if not (is_auth(request)): return redirect('/users/login')
-
+		# get orgid for return button
+		store = Store.objects.filter(id = storeid)[0]
 		items = Item.objects.filter(store = storeid)
-		return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid})
+		return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid, 'orgid':store.organization.id})
 
 	def item_add(request, storeid):
 
@@ -173,3 +173,51 @@ class ItemCrud(object):
 
 		item.delete()
 		return redirect("/backoffice/item_show/" + str(storeid) )
+
+class OrderCrud(object):
+	def order_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		orders = Order.objects.prefetch_related('orderitem').all()
+
+		response = []
+		for order in orders:
+
+			id = order.id
+			created = order.created
+			fullname  = order.customer.name + ' ' + order.customer.lastname
+
+			orderitems = order.orderitem.all()
+			total = 0
+			array_item_names = []
+			array_status = []
+
+			for orderitem in orderitems:
+				total += int(orderitem.price) * int(orderitem.quantity)
+				array_item_names.append(orderitem.item.name)
+				array_status.append(orderitem.status.name)
+
+			dict = {
+				"id": id,
+				"created": created,
+				"fullname": fullname,
+				"status": list(set(array_status)),
+				"item_names": list(set(array_item_names)),
+				"total": total
+			}
+			response.append(dict)
+
+		return render(request,"backoffice/order/show.html",{'orders':response})
+
+	def order_log(request, orderid):
+
+		if not (is_auth(request)): return redirect('/users/login')
+		
+		response = [];
+		order_item = OrderItem.objects.filter(order_id = orderid)
+		for orderitem in order_item:
+			orderitemlog = OrderItemLog.objects.filter(orderitem_id = orderitem.id)
+			response.append(orderitemlog)
+
+		return render(request,"backoffice/order/log.html",{'logs':response})
+		raise Exception(response)

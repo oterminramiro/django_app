@@ -20,4 +20,7 @@ urlpatterns = [
 	path('item_add/<int:storeid>', views.ItemCrud.item_add),
 	path('item_edit/<int:id>', views.ItemCrud.item_edit),
 	path('item_destroy/<int:id>', views.ItemCrud.item_destroy),
+
+	path('order_show', views.OrderCrud.order_show),
+	path('order_log/<int:orderid>', views.OrderCrud.order_log),
 ]

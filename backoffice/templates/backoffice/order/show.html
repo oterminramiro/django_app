@@ -7,21 +7,23 @@
 		<div class="card">
 			<!-- Card header -->
 			<div class="card-header border-0">
-				<h3 class="mb-0">Organizations</h3>
+				<h3 class="mb-0">Orders</h3>
 			</div>
 			<!-- Light table -->
 			<div class="table-responsive">
 				<table class="table align-items-center table-flush">
 					<thead class="thead-light">
 						<tr>
-							<th scope="col" class="sort" data-sort="name">Organization name</th>
+							<th scope="col" class="sort" data-sort="name">Customer</th>
 							<th scope="col" class="sort" data-sort="status">Status</th>
+							<th scope="col" class="sort" data-sort="status">Items</th>
+							<th scope="col" class="sort" data-sort="status">Price</th>
 							<th scope="col" class="sort" data-sort="created">Created</th>
 							<th scope="col" class="sort text-center" data-sort="action">Action</th>
 						</tr>
 					</thead>
 					<tbody class="list">
-					{% for organization in organizations %}
+					{% for order in orders %}
 					<tr>
 						<th scope="row">
 							<div class="media align-items-center">
@@ -29,27 +31,35 @@
 									<img alt="Store logo" src="{% static "/img/theme/vue.jpg" %}">
 								</a>
 								<div class="media-body">
-									<span class="name mb-0 text-sm">{{ organization.name }}</span>
+									<span class="name mb-0 text-sm">{{ order.fullname }}</span>
 								</div>
 							</div>
 						</th>
 						<td>
 							<span class="badge badge-dot mr-4">
-								{% if organization.status.id == 1 %}
-									<i class="bg-success"></i>
-								{% else %}
-									<i class="bg-danger"></i>
-								{% endif %}
-								<span class="status">{{ organization.status.name }}</span>
+								<i class="bg-info"></i>
+								<span class="status">
+									{% for status in order.status %}
+										{{ status }}
+									{% endfor %}
+								</span>
 							</span>
 						</td>
 						<td>
-							{{ organization.created }}
+							{% for item_name in order.item_names %}
+								{{ item_name }}
+							{% endfor %}
+						</td>
+						<td>
+							{{ order.total }}
+						</td>
+						<td>
+							{{ order.created }}
 						</td>
 						<td class="text-center">
-							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/organization_edit/{{ organization.id }}">Edit</a>
-							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/organization_destroy/{{ organization.id }}">Delete</a>
-							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/store_show/{{ organization.id }}">Store</a>
+							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/order_log/{{ order.id }}">Logs</a>
+							<a class="btn btn-success" style="padding: .5rem 1rem;" href="#">Shipping</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="#">Cancel</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -60,5 +70,5 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/organization_add" class="btn btn-primary">Add New Record</a></center>
+
 {% endblock %}

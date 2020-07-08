@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 # Update password
+from django.contrib.auth import authenticate
 from django.contrib.auth import update_session_auth_hash
 # Model user
 from django.contrib.auth.models import User

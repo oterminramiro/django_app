@@ -30,7 +30,7 @@
 					<!-- Nav items -->
 					<ul class="navbar-nav">
 						<li class="nav-item">
-							<a class="nav-link active" href="/">
+							<a class="nav-link" href="/">
 							<i class="ni ni-tv-2 text-primary"></i>
 								<span class="nav-link-text">Dashboard</span>
 							</a>
@@ -42,15 +42,9 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/backoffice/store_show">
+							<a class="nav-link" href="/backoffice/order_show">
 							<i class="ni ni-planet text-orange"></i>
-								<span class="nav-link-text">Store</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/backoffice/item_show">
-							<i class="ni ni-planet text-orange"></i>
-								<span class="nav-link-text">Item</span>
+								<span class="nav-link-text">Orders</span>
 							</a>
 						</li>
 					</ul>
@@ -114,8 +108,6 @@
 
 	</div>
 
-
-
 	<script src="{% static "vendor/jquery/dist/jquery.min.js" %}"></script>
 	<script src="{% static "vendor/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
 	<script src="{% static "vendor/js-cookie/js.cookie.js" %}"></script>
@@ -124,6 +116,16 @@
 	<script src="{% static "vendor/chart.js/dist/Chart.min.js" %}"></script>
 	<script src="{% static "vendor/chart.js/dist/Chart.extension.js" %}"></script>
 	<script src="{% static "js/argon.js" %}"></script>
+
+	<script type="text/javascript">
+		let url = window.location.pathname;
+
+		$("a").each(function(){
+			if ($(this).attr("href") == url){
+				$(this).addClass("active");
+			}
+		});
+	</script>
 </body>
 
 </html>

@@ -7,8 +7,8 @@ from django.core import serializers
 import jwt
 import random
 
-from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer, OrderSerializer
-from .models import Item, Customer, Store, Order, OrderItem, Organization
+from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer, OrderSerializer, OrderItemLogSerializer
+from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organization
 from .models import CustomerCode as CustomerCodeModel
 
 # GET ALL USERS // POST FOR CREATE
@@ -179,6 +179,8 @@ class OrderCreate(APIView):
 							quantity = items['Quantity']
 							price_item = int(single_item.price) * int(quantity)
 							order_item = OrderItem.objects.create(customer_id = customer.id, price = price_item, quantity = quantity, item_id = single_item.id, status_id = 1, order_id = order.id)
+							if(order_item):
+								order_item_log = OrderItemLog.objects.create(orderitem_id = order_item.id , status_id = order_item.status.id)
 
 					return Response('Order created')
 			else:
