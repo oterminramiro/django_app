@@ -19,7 +19,7 @@
 		        </div>
 		    {% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/store_add">
+		<form method="POST" class="" action="/backoffice/store_add/{{ orgid }}">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -29,12 +29,7 @@
 					</div>
 				</div>
 				<div class="mx-auto" style="width:75%">
-					<div class="form-group">
-						<label class=" col-form-label">Organization:</label>
-						<div class="">
-						  {{ form.organization }}
-						</div>
-				 	</div>
+
 					<div class="form-group">
 						<label class=" col-form-label">Status:</label>
 						<div class="">
