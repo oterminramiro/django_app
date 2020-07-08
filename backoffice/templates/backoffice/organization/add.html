@@ -19,7 +19,7 @@
 		        </div>
 		    {% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/store_add">
+		<form method="POST" class="" action="/backoffice/organization_add">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -28,35 +28,12 @@
 						<h3>Enter Details</h3>
 					</div>
 				</div>
-				<div class="mx-auto" style="width:75%">
-					<div class="form-group">
-						<label class=" col-form-label">Organization:</label>
-						<div class="">
-						  {{ form.organization }}
-						</div>
-				 	</div>
-					<div class="form-group">
-						<label class=" col-form-label">Status:</label>
-						<div class="">
-						  {{ form.status }}
-						</div>
-				 	</div>
-				 	<div class="form-group">
-						<label class=" col-form-label">Name:</label>
-						<div class="">
-						  {{ form.name }}
-						</div>
-				  	</div>
-					<div class="form-group">
-						<label class=" col-form-label">Address:</label>
-						<div class="">
-						  {{ form.address }}
-						</div>
-				  	</div>
+				<div class="mx-auto mb-5" style="width:75%">
+					{{ form }}
 			  	</div>
 				<div class="form-group row">
 					<div class="col-sm-12 text-center">
-						<button type="submit" class="btn btn-success">Update</button>
+						<button type="submit" class="btn btn-success">Add</button>
 					</div>
 				</div>
 			</div>

@@ -7,8 +7,8 @@ from django.core import serializers
 import jwt
 import random
 
-from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer
-from .models import Item, Customer, Store, Order, OrderItem
+from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer
+from .models import Item, Customer, Store, Order, OrderItem, Organization
 from .models import CustomerCode as CustomerCodeModel
 
 # GET ALL USERS // POST FOR CREATE
@@ -89,7 +89,7 @@ class ItemExist(generics.RetrieveAPIView):
 	queryset = Item.objects.all()
 	serializer_class = ItemSerializer
 
-# GET ALL ITEMS
+# GET ALL STORES
 class StoreList(generics.ListAPIView):
 	def get(self,request):
 		try:
@@ -108,10 +108,34 @@ class StoreList(generics.ListAPIView):
 
 		return Response('server error')
 
-# GET A SINGLE ITEM BY PK
+# GET A SINGLE STORE BY PK
 class StoreExist(generics.RetrieveAPIView):
 	queryset = Store.objects.all()
 	serializer_class = StoreSerializer
+
+# GET ALL ORG
+class OrganizationList(generics.ListAPIView):
+	def get(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Organization.objects.all()
+			serializer = OrganizationSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
+
+# GET A SINGLE ORGANIZATION BY PK
+class OrganizationExist(generics.RetrieveAPIView):
+	queryset = Organization.objects.all()
+	serializer_class = OrganizationSerializer
 
 class OrderCreate(APIView):
 	def post(self, request):

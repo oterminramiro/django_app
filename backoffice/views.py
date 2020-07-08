@@ -1,11 +1,60 @@
 from django.shortcuts import render, redirect
-from orders_api.models import Status, Store, Item
-from .forms import StoreForm, ItemForm
+from orders_api.models import Status, Organization, Store, Item
+from .forms import OrganizationForm, StoreForm, ItemForm
 
 
 from utils.views import is_auth
 
+class OrganizationCrud(object):
+	def organization_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		organization = Organization.objects.all()
+		return render(request,"backoffice/organization/show.html",{'organizations':organization})
+
+	def organization_add(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		if request.method == "POST":
+			form = OrganizationForm(request.POST)
+			if form.is_valid():
+				try:
+					form.save()
+					return redirect('/backoffice/organization_show')
+				except:
+					pass
+		else:
+			form = OrganizationForm()
+
+		return render(request,'backoffice/organization/add.html',{'form':form})
+
+	def organization_edit(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+		organization = Organization.objects.get(id=id)
+
+		if request.method == "POST":
+			form = OrganizationForm(request.POST, instance = organization)
+			if form.is_valid():
+				form.save()
+				return redirect("/backoffice/organization_show")
+		else:
+			form = OrganizationForm(instance = organization)
+
+		context = {'form':form, 'organization':organization}
+
+		return render(request,'backoffice/organization/edit.html', context)
+
+	def organization_destroy(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+		organization = Organization.objects.get(id=id)
+		organization.delete()
+		return redirect("/backoffice/organization_show")
+
+
 class StoreCrud(object):
+
+	def store_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		stores = Store.objects.all()
+		return render(request,"backoffice/store/show.html",{'stores':stores})
 
 	def store_add(request):
 		if not (is_auth(request)): return redirect('/users/login')
@@ -21,11 +70,6 @@ class StoreCrud(object):
 			form = StoreForm()
 
 		return render(request,'backoffice/store/add.html',{'form':form})
-
-	def store_show(request):
-		if not (is_auth(request)): return redirect('/users/login')
-		stores = Store.objects.all()
-		return render(request,"backoffice/store/show.html",{'stores':stores})
 
 	# form para editar
 	def store_edit(request, id):
@@ -51,6 +95,7 @@ class StoreCrud(object):
 		return redirect("/backoffice/store_show")
 
 class ItemCrud(object):
+
 	def item_show(request):
 		if not (is_auth(request)): return redirect('/users/login')
 		items = Item.objects.all()

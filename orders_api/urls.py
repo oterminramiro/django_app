@@ -14,5 +14,8 @@ urlpatterns = [
     path("store_list/", views.StoreList.as_view(), name="store_list"),
     path("store_list/<int:pk>/", views.StoreExist.as_view(), name="store_exist"),
 
+    path("organization_list/", views.OrganizationList.as_view(), name="organization_list"),
+    path("organization_list/<int:pk>/", views.OrganizationExist.as_view(), name="organization_exist"),
+
 	path("order_create/", views.OrderCreate.as_view(), name="order_create"),
 ]
