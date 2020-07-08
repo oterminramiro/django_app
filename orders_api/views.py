@@ -106,6 +106,7 @@ class OrganizationList(generics.ListAPIView):
 class OrganizationExist(generics.RetrieveAPIView):
 	queryset = Organization.objects.all()
 	serializer_class = OrganizationSerializer
+	lookup_field = 'slug'
 
 # GET ALL STORES
 class StoreList(generics.ListAPIView):
