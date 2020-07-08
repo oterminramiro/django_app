@@ -17,7 +17,7 @@
 							<th scope="col" class="sort" data-sort="name">Organization name</th>
 							<th scope="col" class="sort" data-sort="status">Status</th>
 							<th scope="col" class="sort" data-sort="created">Created</th>
-							<th scope="col" class="sort" data-sort="action">Action</th>
+							<th scope="col" class="sort text-center" data-sort="action">Action</th>
 						</tr>
 					</thead>
 					<tbody class="list">
@@ -42,42 +42,15 @@
 						<td>
 							{{ organization.created }}
 						</td>
-						<td class="text-left">
+						<td class="text-center">
 							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/organization_edit/{{ organization.id }}">Edit</a>
 							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/organization_destroy/{{ organization.id }}">Delete</a>
+							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/store_show/{{ organization.id }}">Store</a>
 						</td>
 					</tr>
 					{% endfor %}
 					</tbody>
 				</table>
-			</div>
-			<!-- Card footer -->
-			<div class="card-footer py-4">
-				<nav aria-label="...">
-					<ul class="pagination justify-content-end mb-0">
-						<li class="page-item disabled">
-							<a class="page-link" href="#" tabindex="-1">
-							<i class="fas fa-angle-left"></i>
-								<span class="sr-only">Previous</span>
-							</a>
-						</li>
-						<li class="page-item active">
-							<a class="page-link" href="#">1</a>
-						</li>
-						<li class="page-item">
-							<a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-						</li>
-						<li class="page-item">
-							<a class="page-link" href="#">3</a>
-						</li>
-						<li class="page-item">
-							<a class="page-link" href="#">
-								<i class="fas fa-angle-right"></i>
-								<span class="sr-only">Next</span>
-							</a>
-						</li>
-					</ul>
-				</nav>
 			</div>
 		</div>
 	</div>

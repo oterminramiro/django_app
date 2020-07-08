@@ -51,9 +51,9 @@ class OrganizationCrud(object):
 
 class StoreCrud(object):
 
-	def store_show(request):
+	def store_show(request, orgid):
 		if not (is_auth(request)): return redirect('/users/login')
-		stores = Store.objects.all()
+		stores = Store.objects.filter(organization = orgid)
 		return render(request,"backoffice/store/show.html",{'stores':stores})
 
 	def store_add(request):
@@ -96,9 +96,9 @@ class StoreCrud(object):
 
 class ItemCrud(object):
 
-	def item_show(request):
+	def item_show(request, storeid):
 		if not (is_auth(request)): return redirect('/users/login')
-		items = Item.objects.all()
+		items = Item.objects.filter(store = storeid)
 		return render(request,"backoffice/item/show.html",{'items':items})
 
 	def item_add(request):
