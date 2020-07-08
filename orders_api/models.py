@@ -56,7 +56,7 @@ class Order(models.Model):
 	updated = models.DateTimeField(auto_now=True)
 
 class OrderItem(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.PROTECT)
+	order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="orderitem")
 	customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 	status = models.ForeignKey(OrderItemStatus, on_delete=models.PROTECT)
 	item = models.ForeignKey(Item, on_delete=models.PROTECT)

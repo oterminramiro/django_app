@@ -7,7 +7,7 @@ from django.core import serializers
 import jwt
 import random
 
-from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer
+from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer, OrderSerializer
 from .models import Item, Customer, Store, Order, OrderItem, Organization
 from .models import CustomerCode as CustomerCodeModel
 
@@ -65,8 +65,7 @@ class CustomerLogin(APIView):
 		except Exception as e:
 			return Response(str(e))
 
-# GET ALL ITEMS
-class ItemList(generics.ListAPIView):
+class CustomerOrder(generics.ListAPIView):
 	def get(self,request):
 		try:
 			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
@@ -76,42 +75,13 @@ class ItemList(generics.ListAPIView):
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
-			queryset = Item.objects.all()
-			serializer = ItemSerializer(queryset, many=True)
+			queryset = Order.objects.filter(customer_id = customer.id)
+			serializer = OrderSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
 			return Response('Customer not found')
 
 		return Response('server error')
-
-# GET A SINGLE ITEM BY PK
-class ItemExist(generics.RetrieveAPIView):
-	queryset = Item.objects.all()
-	serializer_class = ItemSerializer
-
-# GET ALL STORES
-class StoreList(generics.ListAPIView):
-	def get(self,request):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
-			queryset = Store.objects.all()
-			serializer = StoreSerializer(queryset, many=True)
-			return Response(serializer.data)
-		else:
-			return Response('Customer not found')
-
-		return Response('server error')
-
-# GET A SINGLE STORE BY PK
-class StoreExist(generics.RetrieveAPIView):
-	queryset = Store.objects.all()
-	serializer_class = StoreSerializer
 
 # GET ALL ORG
 class OrganizationList(generics.ListAPIView):
@@ -137,6 +107,54 @@ class OrganizationExist(generics.RetrieveAPIView):
 	queryset = Organization.objects.all()
 	serializer_class = OrganizationSerializer
 
+# GET ALL STORES
+class StoreList(generics.ListAPIView):
+	def get(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Store.objects.all()
+			serializer = StoreSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
+
+# GET A SINGLE STORE BY PK
+class StoreExist(generics.RetrieveAPIView):
+	queryset = Store.objects.all()
+	serializer_class = StoreSerializer
+
+# GET ALL ITEMS
+class ItemList(generics.ListAPIView):
+	def get(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Item.objects.all()
+			serializer = ItemSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
+
+# GET A SINGLE ITEM BY PK
+class ItemExist(generics.RetrieveAPIView):
+	queryset = Item.objects.all()
+	serializer_class = ItemSerializer
+
 class OrderCreate(APIView):
 	def post(self, request):
 		try:
@@ -159,7 +177,7 @@ class OrderCreate(APIView):
 						else:
 							quantity = items['Quantity']
 							price_item = int(single_item.price) * int(quantity)
-							order_item = OrderItem.objects.create(customer_id = customer.id, price = price_item, quantity = quantity, item_id = single_item.id)
+							order_item = OrderItem.objects.create(customer_id = customer.id, price = price_item, quantity = quantity, item_id = single_item.id, status_id = 1, order_id = order.id)
 
 					return Response('Order created')
 			else:

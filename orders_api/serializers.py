@@ -15,16 +15,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
 		fields = ('status', 'name', 'created', 'updated')
 
 class StoreSerializer(serializers.ModelSerializer):
-	organization =serializers.StringRelatedField(many=True)
-	status = serializers.StringRelatedField(many=True)
+	organization =serializers.StringRelatedField(many=False)
+	status = serializers.StringRelatedField(many=False)
 
 	class Meta:
 		model = Store
 		fields = ('organization', 'status', 'name', 'address', 'created', 'updated')
 
 class ItemSerializer(serializers.ModelSerializer):
-	store = serializers.StringRelatedField(many=True)
-	status = serializers.StringRelatedField(many=True)
+	store = serializers.StringRelatedField(many=False)
+	status = serializers.StringRelatedField(many=False)
 
 	class Meta:
 		model = Item
@@ -45,21 +45,22 @@ class OrderItemStatusSerializer(serializers.ModelSerializer):
 		model = OrderItemStatus
 		fields = ('name', 'key')
 
-class OrderSerializer(serializers.ModelSerializer):
-	customer = serializers.StringRelatedField(many=True)
-
-	class Meta:
-		model = Order
-		fields = ('customer', 'created', 'updated')
-
 class OrderItemSerializer(serializers.ModelSerializer):
-	customer = serializers.StringRelatedField(many=True)
-	orderitemstatus = serializers.StringRelatedField(many=True)
-	item = serializers.StringRelatedField(many=True)
+	orderid = serializers.StringRelatedField(many=False)
+	orderitemstatus = serializers.StringRelatedField(many=False)
+	item = ItemSerializer(many=False, read_only=False, required=True)
 
 	class Meta:
 		model = OrderItem
-		fields = ('customer', 'status', 'item', 'quantity', 'price', 'created', 'updated')
+		fields = ('orderitemstatus','orderid', 'item', 'quantity', 'price', 'created', 'updated')
+
+class OrderSerializer(serializers.ModelSerializer):
+	customer = CustomerSerializer(many=False, read_only=False, required=True)
+	orderitem = OrderItemSerializer(many=True, read_only=True)
+	class Meta:
+		model = Order
+		fields = ('customer', 'created', 'updated', 'orderitem')
+
 
 class CustomerCodeSerializer(serializers.ModelSerializer):
 	class Meta:
