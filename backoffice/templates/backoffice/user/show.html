@@ -1,0 +1,64 @@
+{% extends 'dashboard/base_template.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row py-5">
+	<div class="col">
+		<div class="card">
+			<!-- Card header -->
+			<div class="card-header border-0">
+				<h3 class="mb-0">Organizations</h3>
+			</div>
+			<!-- Light table -->
+			<div class="table-responsive">
+				<table class="table align-items-center table-flush">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" class="sort" data-sort="name">Username</th>
+							<th scope="col" class="sort" data-sort="status">Role</th>
+							<th scope="col" class="sort" data-sort="status">Full name</th>
+							<th scope="col" class="sort" data-sort="created">Created</th>
+							<th scope="col" class="sort text-center" data-sort="action">Action</th>
+						</tr>
+					</thead>
+					<tbody class="list">
+					{% for user in users %}
+					<tr>
+						<th scope="row">
+							<div class="media align-items-center">
+								<a href="#" class="avatar rounded-circle mr-3">
+									<img alt="Store logo" src="{% static "/img/theme/vue.jpg" %}">
+								</a>
+								<div class="media-body">
+									<span class="name mb-0 text-sm">{{ user.username }}</span>
+								</div>
+							</div>
+						</th>
+						<td>
+							<span class="badge badge-dot mr-4">
+								<i class="bg-success"></i>
+								<span class="status">{{ user.role.name }}</span>
+							</span>
+						</td>
+						<td>
+							{{ user.get_full_name }}
+						</td>
+						<td>
+							{{ user.date_joined }}
+						</td>
+						<td class="text-center">
+							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/organization_edit/{{ organization.id }}">Edit</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/organization_destroy/{{ organization.id }}">Delete</a>
+							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/store_show/{{ organization.id }}">Store</a>
+						</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<center><a href="/backoffice/organization_add" class="btn btn-primary">Add New Record</a></center>
+{% endblock %}

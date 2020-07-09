@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog
+from users.models import User
 from .forms import OrganizationForm, StoreForm, ItemForm
 
 
@@ -212,7 +213,7 @@ class OrderCrud(object):
 	def order_log(request, orderid):
 
 		if not (is_auth(request)): return redirect('/users/login')
-		
+
 		response = [];
 		order_item = OrderItem.objects.filter(order_id = orderid)
 		for orderitem in order_item:
@@ -221,3 +222,9 @@ class OrderCrud(object):
 
 		return render(request,"backoffice/order/log.html",{'logs':response})
 		raise Exception(response)
+
+class UserCrud(object):
+	def user_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		users = User.objects.exclude(role=1)
+		return render(request,"backoffice/user/show.html",{'users':users})

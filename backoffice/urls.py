@@ -23,4 +23,6 @@ urlpatterns = [
 
 	path('order_show', views.OrderCrud.order_show),
 	path('order_log/<int:orderid>', views.OrderCrud.order_log),
+
+	path('user_show', views.UserCrud.user_show),
 ]
