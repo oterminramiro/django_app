@@ -1,0 +1,40 @@
+{% extends 'dashboard/base_template.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row py-5">
+	<div class="col">
+		<div class="card w-75 mx-auto">
+			<!-- Card header -->
+			<div class="card-header border-0">
+				<h3 class="mb-0">Organizations</h3>
+			</div>
+			<!-- Light table -->
+			<div class="table-responsive">
+				<table class="table align-items-center table-flush">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" class="sort" data-sort="status">Organization</th>
+							<th scope="col" class="sort text-center" data-sort="status">Action</th>
+						</tr>
+					</thead>
+					<tbody class="list">
+					{% for org_item in org %}
+					<tr>
+						<td>
+							{{ org_item.name }}
+						</td>
+						<td class="text-center">
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/user_org_destroy/{{ org_item.id }}">Delete</a>
+						</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<center><a href="/backoffice/user_org_add/{{ userid }}" class="btn btn-primary">Add New Record</a></center>
+{% endblock %}

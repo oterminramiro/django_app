@@ -1,5 +1,6 @@
 from django import forms
 from orders_api.models import Organization, Store, Status, Item
+from users.models import User, UserOrganization
 
 class OrganizationForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
@@ -30,3 +31,33 @@ class ItemForm(forms.ModelForm):
 	class Meta:
 		model = Item
 		fields = "__all__"
+
+class UserAddForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(UserForm, self).__init__(*args, **kwargs)
+		for visible in self.visible_fields():
+			visible.field.widget.attrs['class'] = 'form-control'
+
+	class Meta:
+		model = User
+		fields = ['role', 'username','email','password']
+
+class UserEditForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(UserEditForm, self).__init__(*args, **kwargs)
+		for visible in self.visible_fields():
+			visible.field.widget.attrs['class'] = 'form-control'
+
+	class Meta:
+		model = User
+		fields = ['username','first_name','last_name','email']
+
+class UserOrgAddForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(UserOrgAddForm, self).__init__(*args, **kwargs)
+		for visible in self.visible_fields():
+			visible.field.widget.attrs['class'] = 'form-control'
+
+	class Meta:
+		model = UserOrganization
+		fields = ['user','organization']

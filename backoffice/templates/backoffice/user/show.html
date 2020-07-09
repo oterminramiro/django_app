@@ -47,9 +47,9 @@
 							{{ user.date_joined }}
 						</td>
 						<td class="text-center">
-							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/organization_edit/{{ organization.id }}">Edit</a>
-							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/organization_destroy/{{ organization.id }}">Delete</a>
-							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/store_show/{{ organization.id }}">Store</a>
+							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/user_edit/{{ user.id }}">Edit</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/user_destroy/{{ user.id }}">Delete</a>
+							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/user_org_show/{{ user.id }}">Organizations</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -60,5 +60,5 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/organization_add" class="btn btn-primary">Add New Record</a></center>
+<center><a href="/backoffice/user_add" class="btn btn-primary">Add New Record</a></center>
 {% endblock %}

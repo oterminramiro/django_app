@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog
-from users.models import User
-from .forms import OrganizationForm, StoreForm, ItemForm
-
+from users.models import User, UserOrganization
+from .forms import OrganizationForm, StoreForm, ItemForm, UserAddForm, UserEditForm, UserOrgAddForm
 
 from utils.views import is_auth
 
@@ -221,10 +220,92 @@ class OrderCrud(object):
 			response.append(orderitemlog)
 
 		return render(request,"backoffice/order/log.html",{'logs':response})
-		raise Exception(response)
 
 class UserCrud(object):
 	def user_show(request):
 		if not (is_auth(request)): return redirect('/users/login')
 		users = User.objects.exclude(role=1)
 		return render(request,"backoffice/user/show.html",{'users':users})
+
+	def user_add(request):
+
+		if not (is_auth(request)): return redirect('/users/login')
+		if request.method == "POST":
+
+			form = UserAddForm(request.POST)
+			if form.is_valid():
+				form.save()
+				return redirect("/backoffice/user_show" )
+			else:
+				pass
+		else:
+			form = UserAddForm()
+		context = {'form': form}
+		return render(request,'backoffice/user/add.html',context)
+
+	def user_edit(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		user = User.objects.get(id=id)
+
+		if request.method == "POST":
+
+			form = UserEditForm(request.POST, instance = user)
+			if form.is_valid():
+				form.save()
+				return redirect("/backoffice/user_show" )
+		else:
+			form = UserEditForm(instance = user)
+
+		context = {'form':form, 'user':user}
+
+		return render(request,'backoffice/user/edit.html', context)
+
+	def user_destroy(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		user = User.objects.get(id=id)
+		user.delete()
+
+		return redirect("/backoffice/user_show" )
+
+	def user_org_show(request, userid):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		user = User.objects.get(id=userid)
+		colection = UserOrganization.objects.filter(user_id = user.id)
+
+		response = []
+		for user_org in colection:
+			dict = { 'id': user_org.id , 'name': user_org.organization.name }
+			response.append(dict)
+
+		context = {'org':response , 'userid': userid }
+		return render(request,"backoffice/user/user_org_show.html",context)
+
+	def user_org_add(request, userid):
+		if not (is_auth(request)): return redirect('/users/login')
+		if request.method == "POST":
+
+			request.POST._mutable = True
+			request.POST['user'] = userid
+
+			form = UserOrgAddForm(request.POST)
+			if form.is_valid():
+				form.save()
+				return redirect("/backoffice/user_org_show/" + str(userid) )
+			else:
+				pass
+		else:
+			form = UserOrgAddForm()
+		context = {'form': form , 'userid': userid}
+		return render(request,'backoffice/user/user_org_add.html',context)
+
+	def user_org_destroy(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		user_org = UserOrganization.objects.get(id=id)
+		userid = user_org.user_id
+		user_org.delete()
+
+		return redirect("/backoffice/user_org_show/" + str(userid) )

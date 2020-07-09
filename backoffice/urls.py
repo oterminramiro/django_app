@@ -25,4 +25,11 @@ urlpatterns = [
 	path('order_log/<int:orderid>', views.OrderCrud.order_log),
 
 	path('user_show', views.UserCrud.user_show),
+	path('user_add', views.UserCrud.user_add),
+	path('user_edit/<int:id>', views.UserCrud.user_edit),
+	path('user_destroy/<int:id>', views.UserCrud.user_destroy),
+
+	path('user_org_show/<int:userid>', views.UserCrud.user_org_show),
+	path('user_org_add/<int:userid>', views.UserCrud.user_org_add),
+	path('user_org_destroy/<int:id>', views.UserCrud.user_org_destroy),
 ]
