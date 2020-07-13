@@ -50,6 +50,7 @@ class Item(models.Model):
 	store = models.ForeignKey(Store, on_delete=models.PROTECT)
 	name = models.CharField(max_length=100)
 	price = models.CharField(max_length=100)
+	description = models.CharField(max_length=400)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

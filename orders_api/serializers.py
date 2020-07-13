@@ -42,7 +42,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Item
-		fields = ('status', 'store', 'name', 'price', 'created', 'updated')
+		fields = ('status', 'store', 'name', 'price', 'description', 'created', 'updated')
 
 class CustomerSerializer(serializers.ModelSerializer):
 	def validate(self, data):
