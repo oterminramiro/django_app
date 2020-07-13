@@ -7,6 +7,7 @@ urlpatterns = [
     path("customer_list/<int:phone>/", views.CustomerExist.as_view(), name="customer_exist"),
     path("customer_code/", views.CustomerCode.as_view(), name="customer_code"),
     path("customer_login/", views.CustomerLogin.as_view(), name="customer_login"),
+    path("customer_edit/<int:phone>/", views.CustomerEdit.as_view(), name="customer_edit"),
     path("customer_order/", views.CustomerOrder.as_view(), name="customer_order"),
 
     path("item_list/", views.ItemList.as_view(), name="item_list"),

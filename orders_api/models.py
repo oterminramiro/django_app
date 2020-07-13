@@ -54,9 +54,11 @@ class Item(models.Model):
 	updated = models.DateTimeField(auto_now=True)
 
 class Customer(models.Model):
-	name = models.CharField(max_length=100)
-	lastname = models.CharField(max_length=100)
+	name = models.CharField(max_length=100, blank=True)
+	lastname = models.CharField(max_length=100, blank=True)
 	phone = models.CharField(unique=True,max_length=100)
+	email = models.CharField(unique=True,max_length=100, blank=True)
+	birthday = models.DateField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

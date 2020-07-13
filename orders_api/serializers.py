@@ -50,7 +50,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Customer
-		fields = ('name', 'lastname', 'phone', 'created', 'updated')
+		fields = ('name', 'lastname', 'phone', 'email', 'birthday', 'created', 'updated')
 
 class OrderItemStatusSerializer(serializers.ModelSerializer):
 	class Meta:

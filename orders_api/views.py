@@ -65,6 +65,11 @@ class CustomerLogin(APIView):
 		except Exception as e:
 			return Response(str(e))
 
+class CustomerEdit(generics.UpdateAPIView):
+	queryset = Customer.objects.all()
+	serializer_class = CustomerSerializer
+	lookup_field = 'phone'
+
 class CustomerOrder(generics.ListAPIView):
 	def get(self,request):
 		try:
