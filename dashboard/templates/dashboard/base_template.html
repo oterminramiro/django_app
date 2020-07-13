@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="{% static "vendor/nucleo/css/nucleo.css" %}" type="text/css">
 	<link rel="stylesheet" href="{% static "vendor/@fortawesome/fontawesome-free/css/all.min.css" %}" type="text/css">
 	<link rel="stylesheet" href="{% static "css/argon.css" %}" type="text/css">
+	{% block css %}
+	{% endblock %}
 </head>
 
 <body>
@@ -37,19 +39,19 @@
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/organization_show">
-							<i class="ni ni-planet text-orange"></i>
+							<i class="ni ni-shop"></i>
 								<span class="nav-link-text">Organization</span>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/order_show">
-							<i class="ni ni-planet text-orange"></i>
+							<i class="ni ni-box-2"></i>
 								<span class="nav-link-text">Orders</span>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/user_show">
-							<i class="ni ni-planet text-orange"></i>
+							<i class="ni ni-single-02"></i>
 								<span class="nav-link-text">Users</span>
 							</a>
 						</li>
@@ -132,6 +134,8 @@
 			}
 		});
 	</script>
+	{% block script %}
+	{% endblock %}
 </body>
 
 </html>

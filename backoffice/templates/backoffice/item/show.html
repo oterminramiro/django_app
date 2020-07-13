@@ -1,7 +1,11 @@
 {% extends 'dashboard/base_template.html' %}
 {% load static %}
-{% block content %}
 
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+{%  endblock %}
+
+{% block content %}
 <ul class="pagination pt-5">
 	<li class="page-item">
 		<a class="page-link" href="/backoffice/store_show/{{ orgid }}" aria-label="Previous">
@@ -12,14 +16,14 @@
 </ul>
 <div class="row">
 	<div class="col">
-		<div class="card">
+		<div class="card pb-2">
 			<!-- Card header -->
 			<div class="card-header border-0">
 				<h3 class="mb-0">Items</h3>
 			</div>
 			<!-- Light table -->
 			<div class="table-responsive">
-				<table class="table align-items-center table-flush">
+				<table class="table align-items-center table-flush" id="myTable">
 					<thead class="thead-light">
 						<tr>
 							<th scope="col" class="sort" data-sort="name">Item name</th>
@@ -76,4 +80,21 @@
 </div>
 
 <center><a href="/backoffice/item_add/{{ storeid }}" class="btn btn-primary">Add New Record</a></center>
+{% endblock %}
+
+{% block script %}
+	<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" charset="utf-8"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(document).ready( function () {
+			$('#myTable').DataTable({
+				"language": {
+					"paginate": {
+						"previous": "<i class='fas fa-angle-left'></i>",
+						"next": "<i class='fas fa-angle-right'></i>"
+					}
+				}
+			});
+		} );
+	</script>
 {% endblock %}
