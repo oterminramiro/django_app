@@ -20,7 +20,7 @@ class StoreForm(forms.ModelForm):
 
 	class Meta:
 		model = Store
-		fields = ['organization', 'status' , 'name', 'address']
+		fields = ['organization', 'status' , 'name', 'address', 'logo']
 
 class ItemForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):

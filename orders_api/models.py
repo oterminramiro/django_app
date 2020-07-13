@@ -40,6 +40,7 @@ class Store(models.Model):
 	status = models.ForeignKey(Status, on_delete=models.PROTECT)
 	name = models.CharField(max_length=100)
 	address = models.CharField(max_length=100)
+	logo = models.FileField(upload_to='static/img/uploads/store/')
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

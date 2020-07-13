@@ -23,7 +23,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Store
-		fields = ('organization', 'status', 'name', 'address', 'created', 'updated')
+		fields = ('organization', 'status', 'name', 'address', 'logo', 'created', 'updated')
 		depth = 1
 
 class OrganizationSerializer(serializers.ModelSerializer):

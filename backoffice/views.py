@@ -32,7 +32,7 @@ class OrganizationCrud(object):
 		organization = Organization.objects.get(id=id)
 
 		if request.method == "POST":
-			form = OrganizationForm(request.POST, instance = organization)
+			form = OrganizationForm(request.POST, request.FILES, instance = organization)
 			if form.is_valid():
 				form.save()
 				return redirect("/backoffice/organization_show")
@@ -67,7 +67,7 @@ class StoreCrud(object):
 			request.POST._mutable = True
 			request.POST['organization'] = orgid
 
-			form = StoreForm(request.POST)
+			form = StoreForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
 				return redirect('/backoffice/store_show/' + str(orgid) )
@@ -91,7 +91,7 @@ class StoreCrud(object):
 			request.POST._mutable = True
 			request.POST['organization'] = orgid
 
-			form = StoreForm(request.POST, instance = store)
+			form = StoreForm(request.POST, request.FILES, instance = store)
 			if form.is_valid():
 				form.save()
 				return redirect("/backoffice/store_show/" + str(orgid) )

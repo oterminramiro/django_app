@@ -19,7 +19,7 @@
 				</div>
 			{% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/store_edit/{{store.id}}">
+		<form method="POST" class="" action="/backoffice/store_edit/{{store.id}}" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -45,6 +45,13 @@
 						<label class=" col-form-label">Address:</label>
 						<div class="">
 						  {{ form.address }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">{{ form.logo.label }}</label>
+						<div class="">
+						  {{ form.logo }}
+						  <img class="card-img-top my-4" src="/{{ form.logo.value }}">
 						</div>
 				  	</div>
 				</div>

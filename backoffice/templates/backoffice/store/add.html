@@ -19,7 +19,7 @@
 		        </div>
 		    {% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/store_add/{{ orgid }}">
+		<form method="POST" class="" action="/backoffice/store_add/{{ orgid }}" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -46,6 +46,12 @@
 						<label class=" col-form-label">Address:</label>
 						<div class="">
 						  {{ form.address }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">Logo:</label>
+						<div class="">
+						  {{ form.logo }}
 						</div>
 				  	</div>
 			  	</div>
