@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.contrib.sites.shortcuts import get_current_site
 from .models import Status,PaymentMethod, ShippingMethod, Organization, Store, Item, Customer, Order, OrderItemStatus, OrderItem, OrderItemLog, CustomerCode
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated')
+		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'logo', 'created', 'updated')
 
 class ItemSerializer(serializers.ModelSerializer):
 	store = serializers.StringRelatedField(many=False)
