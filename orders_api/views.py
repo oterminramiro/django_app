@@ -11,17 +11,17 @@ from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSeriali
 from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organization
 from .models import CustomerCode as CustomerCodeModel
 
+
+
 # GET ALL USERS // POST FOR CREATE
 class CustomerList(generics.ListCreateAPIView):
 	queryset = Customer.objects.all()
 	serializer_class = CustomerSerializer
-
 # GET A SINGLE USER BY SEARCHING FOR PHONE
 class CustomerExist(generics.RetrieveAPIView):
 	queryset = Customer.objects.all()
 	serializer_class = CustomerSerializer
 	lookup_field = 'phone'
-
 # SEND CODE
 class CustomerCode(APIView):
 	def post(self,request):
@@ -41,7 +41,6 @@ class CustomerCode(APIView):
 				return Response('Customer not found')
 		except Exception as e:
 			return Response(str(e))
-
 # LOGIN AND JWT RESPONSE
 class CustomerLogin(APIView):
 	def post(self,request):
@@ -87,6 +86,11 @@ class CustomerOrder(generics.ListAPIView):
 			return Response('Customer not found')
 
 		return Response('server error')
+
+
+
+
+
 
 # GET ALL ORG
 class OrganizationList(generics.ListAPIView):
@@ -160,6 +164,11 @@ class ItemList(generics.ListAPIView):
 class ItemExist(generics.RetrieveAPIView):
 	queryset = Item.objects.all()
 	serializer_class = ItemSerializer
+
+
+
+
+
 
 class OrderCreate(APIView):
 	def post(self, request):

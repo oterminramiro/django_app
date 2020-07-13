@@ -24,10 +24,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ('status', 'name', 'slug', 'created', 'updated')
+		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated')
 
 class StoreSerializer(serializers.ModelSerializer):
-	organization =serializers.StringRelatedField(many=False)
+	organization = serializers.StringRelatedField(many=False)
 	status = serializers.StringRelatedField(many=False)
 
 	class Meta:
