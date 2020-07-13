@@ -30,12 +30,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 	status = serializers.StringRelatedField(many=False)
 	paymentmethod = serializers.StringRelatedField(many=False)
 	shippingmethod = serializers.StringRelatedField(many=False)
-	#store = StoreSerializer(many=True, read_only=True)
-	store_set = StoreSerializer(many=True)
+	#store_set = StoreSerializer(many=True)
 
 	class Meta:
 		model = Organization
-		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated', 'store_set')
+		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated')
 
 class ItemSerializer(serializers.ModelSerializer):
 	store = serializers.StringRelatedField(many=False)

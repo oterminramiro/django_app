@@ -128,7 +128,8 @@ class StoreList(generics.ListAPIView):
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
-			queryset = Store.objects.all()
+			orgid = request.data['org']
+			queryset = Store.objects.filter(organization = orgid)
 			serializer = StoreSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
@@ -152,7 +153,8 @@ class ItemList(generics.ListAPIView):
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
-			queryset = Item.objects.all()
+			storeid = request.data['store']
+			queryset = Item.objects.filter(store = storeid)
 			serializer = ItemSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
