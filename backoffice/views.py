@@ -15,7 +15,7 @@ class OrganizationCrud(object):
 	def organization_add(request):
 		if not (is_auth(request)): return redirect('/users/login')
 		if request.method == "POST":
-			form = OrganizationForm(request.POST)
+			form = OrganizationForm(request.POST, request.FILES)
 			if form.is_valid():
 				try:
 					form.save()
