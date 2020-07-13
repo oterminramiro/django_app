@@ -17,15 +17,6 @@ class ShippingMethodSerializer(serializers.ModelSerializer):
 		model = ShippingMethod
 		fields = ('name', 'key')
 
-class OrganizationSerializer(serializers.ModelSerializer):
-	status = serializers.StringRelatedField(many=False)
-	paymentmethod = serializers.StringRelatedField(many=False)
-	shippingmethod = serializers.StringRelatedField(many=False)
-
-	class Meta:
-		model = Organization
-		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated')
-
 class StoreSerializer(serializers.ModelSerializer):
 	organization = serializers.StringRelatedField(many=False)
 	status = serializers.StringRelatedField(many=False)
@@ -33,6 +24,18 @@ class StoreSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Store
 		fields = ('organization', 'status', 'name', 'address', 'created', 'updated')
+		depth = 1
+
+class OrganizationSerializer(serializers.ModelSerializer):
+	status = serializers.StringRelatedField(many=False)
+	paymentmethod = serializers.StringRelatedField(many=False)
+	shippingmethod = serializers.StringRelatedField(many=False)
+	#store = StoreSerializer(many=True, read_only=True)
+	store_set = StoreSerializer(many=True)
+
+	class Meta:
+		model = Organization
+		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'created', 'updated', 'store_set')
 
 class ItemSerializer(serializers.ModelSerializer):
 	store = serializers.StringRelatedField(many=False)
