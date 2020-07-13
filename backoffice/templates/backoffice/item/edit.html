@@ -19,7 +19,7 @@
 				</div>
 			{% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/item_edit/{{item.id}}">
+		<form method="POST" class="" action="/backoffice/item_edit/{{item.id}}" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -45,6 +45,19 @@
 						<label class=" col-form-label">Price:</label>
 						<div class="">
 						  {{ form.price }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">Description:</label>
+						<div class="">
+						  {{ form.description }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">Image:</label>
+						<div class="">
+						  {{ form.logo }}
+						  <img class="card-img-top my-4" src="/{{ form.logo.value }}">
 						</div>
 				  	</div>
 				</div>

@@ -131,7 +131,7 @@ class ItemCrud(object):
 			request.POST._mutable = True
 			request.POST['store'] = storeid
 
-			form = ItemForm(request.POST)
+			form = ItemForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
 				return redirect("/backoffice/item_show/" + str(storeid) )
@@ -154,7 +154,7 @@ class ItemCrud(object):
 			request.POST._mutable = True
 			request.POST['store'] = storeid
 
-			form = ItemForm(request.POST, instance = item)
+			form = ItemForm(request.POST, request.FILES, instance = item)
 			if form.is_valid():
 				form.save()
 				return redirect("/backoffice/item_show/" + str(storeid) )

@@ -19,7 +19,7 @@
 		        </div>
 		    {% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/item_add/{{ storeid }}">
+		<form method="POST" class="" action="/backoffice/item_add/{{ storeid }}" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -45,6 +45,18 @@
 						<label class=" col-form-label">Price:</label>
 						<div class="">
 						  {{ form.price }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">Description:</label>
+						<div class="">
+						  {{ form.description }}
+						</div>
+				  	</div>
+					<div class="form-group">
+						<label class=" col-form-label">Image:</label>
+						<div class="">
+						  {{ form.logo }}
 						</div>
 				  	</div>
 			  	</div>
