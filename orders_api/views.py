@@ -10,7 +10,7 @@ import random
 from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer, OrderSerializer, OrderItemLogSerializer
 from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organization
 from .models import CustomerCode as CustomerCodeModel
-
+from twilio.rest import Client
 
 
 # GET ALL USERS // POST FOR CREATE
@@ -34,6 +34,17 @@ class CustomerCode(APIView):
 				serializer = CustomerCodeSerializer(data=data)
 				if (serializer.is_valid()):
 					serializer.save()
+
+					account_sid = 'AC31cdf95be63d7eebd7bb2d82233ba732'
+					auth_token = '792210800f4ce40b0a85bf8a30acc97d'
+					client = Client(account_sid, auth_token)
+
+					message = client.messages.create(
+						body = "Tu codigo es " + str(code),
+						from_ = '+12029722825',
+						to = "+549" + str(phone)
+					)
+
 					return Response('true')
 				else:
 					return Response(serializer.errors)
