@@ -44,7 +44,8 @@ class UserAuth(object):
 			if user is not None:
 				login_django(request, user)
 				return redirect('/')
-
+			else:
+				messages.error(request, 'User or password invalid')
 		context = {}
 		return render(request, 'users/login.html', context)
 
