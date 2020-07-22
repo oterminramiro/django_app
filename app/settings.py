@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'orders_api.apps.OrdersApiConfig',
     'backoffice.apps.BackofficeConfig',
+    'mercadopago.apps.MercadopagoConfig',
     'rest_framework',
 ]
 
