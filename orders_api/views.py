@@ -114,7 +114,7 @@ class OrganizationList(generics.ListAPIView):
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
-			queryset = Organization.objects.all()
+			queryset = Organization.objects.filter(status_id = 1)
 			serializer = OrganizationSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
@@ -124,9 +124,22 @@ class OrganizationList(generics.ListAPIView):
 
 # GET A SINGLE ORGANIZATION BY PK
 class OrganizationExist(generics.RetrieveAPIView):
-	queryset = Organization.objects.all()
-	serializer_class = OrganizationSerializer
-	lookup_field = 'slug'
+	def get(self,request,slug):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Organization.objects.filter(slug = slug , status_id = 1)
+			serializer = OrganizationSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
 
 # GET ALL STORES
 class StoreList(generics.ListAPIView):
@@ -140,7 +153,7 @@ class StoreList(generics.ListAPIView):
 
 		if customer:
 			orgid = request.data['org']
-			queryset = Store.objects.filter(organization = orgid)
+			queryset = Store.objects.filter(organization = orgid , status_id = 1)
 			serializer = StoreSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
@@ -150,8 +163,22 @@ class StoreList(generics.ListAPIView):
 
 # GET A SINGLE STORE BY PK
 class StoreExist(generics.RetrieveAPIView):
-	queryset = Store.objects.all()
-	serializer_class = StoreSerializer
+	def get(self,request,pk):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Store.objects.filter(id = pk , status_id = 1)
+			serializer = StoreSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
 
 # GET ALL ITEMS
 class ItemList(generics.ListAPIView):
@@ -165,7 +192,7 @@ class ItemList(generics.ListAPIView):
 
 		if customer:
 			storeid = request.data['store']
-			queryset = Item.objects.filter(store = storeid)
+			queryset = Item.objects.filter(store = storeid , status_id = 1)
 			serializer = ItemSerializer(queryset, many=True)
 			return Response(serializer.data)
 		else:
@@ -175,8 +202,22 @@ class ItemList(generics.ListAPIView):
 
 # GET A SINGLE ITEM BY PK
 class ItemExist(generics.RetrieveAPIView):
-	queryset = Item.objects.all()
-	serializer_class = ItemSerializer
+	def get(self,request,pk):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return Response(str(e))
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			queryset = Item.objects.filter(id = pk , status_id = 1)
+			serializer = ItemSerializer(queryset, many=True)
+			return Response(serializer.data)
+		else:
+			return Response('Customer not found')
+
+		return Response('server error')
 
 
 
