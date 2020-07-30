@@ -12,6 +12,8 @@ from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organ
 from .models import CustomerCode as CustomerCodeModel
 from twilio.rest import Client
 
+from utils.views import jwt_token
+
 
 # GET ALL USERS // POST FOR CREATE
 class CustomerList(generics.ListCreateAPIView):
@@ -106,14 +108,8 @@ class CustomerOrder(generics.ListAPIView):
 # GET ALL ORG
 class OrganizationList(generics.ListAPIView):
 	def get(self,request):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
 
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			queryset = Organization.objects.filter(status_id = 1)
 			serializer = OrganizationSerializer(queryset, many=True)
 			return Response(serializer.data)
@@ -125,14 +121,7 @@ class OrganizationList(generics.ListAPIView):
 # GET A SINGLE ORGANIZATION BY PK
 class OrganizationExist(generics.RetrieveAPIView):
 	def get(self,request,slug):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			queryset = Organization.objects.filter(slug = slug , status_id = 1)
 			serializer = OrganizationSerializer(queryset, many=True)
 			return Response(serializer.data)
@@ -144,14 +133,7 @@ class OrganizationExist(generics.RetrieveAPIView):
 # GET ALL STORES
 class StoreList(generics.ListAPIView):
 	def get(self,request):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			orgid = request.data['org']
 			queryset = Store.objects.filter(organization = orgid , status_id = 1)
 			serializer = StoreSerializer(queryset, many=True)
@@ -164,14 +146,7 @@ class StoreList(generics.ListAPIView):
 # GET A SINGLE STORE BY PK
 class StoreExist(generics.RetrieveAPIView):
 	def get(self,request,pk):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			queryset = Store.objects.filter(id = pk , status_id = 1)
 			serializer = StoreSerializer(queryset, many=True)
 			return Response(serializer.data)
@@ -183,14 +158,7 @@ class StoreExist(generics.RetrieveAPIView):
 # GET ALL ITEMS
 class ItemList(generics.ListAPIView):
 	def get(self,request):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			storeid = request.data['store']
 			queryset = Item.objects.filter(store = storeid , status_id = 1)
 			serializer = ItemSerializer(queryset, many=True)
@@ -203,14 +171,7 @@ class ItemList(generics.ListAPIView):
 # GET A SINGLE ITEM BY PK
 class ItemExist(generics.RetrieveAPIView):
 	def get(self,request,pk):
-		try:
-			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
-		except Exception as e:
-			return Response(str(e))
-
-		customer = Customer.objects.filter(phone=token['phone']).first()
-
-		if customer:
+		if jwt_token(request):
 			queryset = Item.objects.filter(id = pk , status_id = 1)
 			serializer = ItemSerializer(queryset, many=True)
 			return Response(serializer.data)
