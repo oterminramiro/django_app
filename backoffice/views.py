@@ -51,26 +51,32 @@ class OrganizationCrud(object):
 
 class StoreCrud(object):
 
-	def store_show(request, orgid):
-
+	def store_show(request, orgid = None):
 		if not (is_auth(request)): return redirect('/users/login')
 
-		stores = Store.objects.filter(organization = orgid)
+		if(orgid != None):
+			stores = Store.objects.filter(organization = orgid)
+		else:
+			stores = Store.objects.all()
 		return render(request,"backoffice/store/show.html",{'stores':stores, 'orgid': orgid})
 
-	def store_add(request, orgid):
+	def store_add(request, orgid = None):
 
 		if not (is_auth(request)): return redirect('/users/login')
 		if request.method == "POST":
 
-			# Hacer el request mutable ( permitir agregarle keys al dictionary ) para luego presetearle el org_id
-			request.POST._mutable = True
-			request.POST['organization'] = orgid
+			if(orgid != None):
+				# Hacer el request mutable ( permitir agregarle keys al dictionary ) para luego presetearle el org_id
+				request.POST._mutable = True
+				request.POST['organization'] = orgid
 
 			form = StoreForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
-				return redirect('/backoffice/store_show/' + str(orgid) )
+				if(orgid != None):
+					return redirect('/backoffice/store_show/' + str(orgid) )
+				else:
+					return redirect('/backoffice/store_show')
 			else:
 				pass
 		else:
@@ -114,27 +120,36 @@ class StoreCrud(object):
 
 class ItemCrud(object):
 
-	def item_show(request, storeid):
+	def item_show(request, storeid = None):
 
 		if not (is_auth(request)): return redirect('/users/login')
-		# get orgid for return button
-		store = Store.objects.filter(id = storeid)[0]
-		items = Item.objects.filter(store = storeid)
-		return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid, 'orgid':store.organization.id})
+		if(storeid != None):
+			# get orgid for return button
+			store = Store.objects.filter(id = storeid)[0]
+			items = Item.objects.filter(store = storeid)
+			return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid, 'orgid':store.organization.id})
+		else:
+			items = Item.objects.all()
+			return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid})
 
-	def item_add(request, storeid):
+
+	def item_add(request, storeid = None):
 
 		if not (is_auth(request)): return redirect('/users/login')
 		if request.method == "POST":
 
-			# Hacer el request mutable ( permitir agregarle keys al dictionary ) para luego presetearle el org_id
-			request.POST._mutable = True
-			request.POST['store'] = storeid
+			if(storeid != None):
+				# Hacer el request mutable ( permitir agregarle keys al dictionary ) para luego presetearle el org_id
+				request.POST._mutable = True
+				request.POST['store'] = storeid
 
 			form = ItemForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
-				return redirect("/backoffice/item_show/" + str(storeid) )
+				if(storeid != None):
+					return redirect("/backoffice/item_show/" + str(storeid) )
+				else:
+					return redirect("/backoffice/item_show" )
 			else:
 				pass
 		else:

@@ -8,7 +8,11 @@
 {% block content %}
 <ul class="pagination pt-5">
 	<li class="page-item">
+		{% if storeid == None %}
+		<a class="page-link" href="/backoffice/store_show" aria-label="Previous">
+		{% else %}
 		<a class="page-link" href="/backoffice/store_show/{{ orgid }}" aria-label="Previous">
+		{% endif %}
 			<i class="fa fa-angle-left"></i>
 			<span class="sr-only">Previous</span>
 		</a>
@@ -79,7 +83,12 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/item_add/{{ storeid }}" class="btn btn-primary">Add New Record</a></center>
+{% if storeid == None %}
+	<center><a href="/backoffice/item_add" class="btn btn-primary">Add New Record</a></center>
+{% else %}
+	<center><a href="/backoffice/item_add/{{ storeid }}" class="btn btn-primary">Add New Record</a></center>
+{% endif %}
+
 {% endblock %}
 
 {% block script %}

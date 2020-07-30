@@ -19,7 +19,13 @@
 		        </div>
 		    {% endfor %}
 		{% endif %}
-		<form method="POST" class="" action="/backoffice/item_add/{{ storeid }}" enctype="multipart/form-data">
+
+		{% if storeid == None %}
+			<form method="POST" class="" action="/backoffice/item_add/" enctype="multipart/form-data">
+		{% else %}
+			<form method="POST" class="" action="/backoffice/item_add/{{ storeid }}" enctype="multipart/form-data">
+		{% endif %}
+
 			{% csrf_token %}
 			<div class="container">
 				<br>
@@ -29,6 +35,16 @@
 					</div>
 				</div>
 				<div class="mx-auto mb-5" style="width:75%">
+
+					{% if storeid == None %}
+					<div class="form-group">
+						<label class=" col-form-label">Store:</label>
+						<div class="">
+						  {{ form.store }}
+						</div>
+					</div>
+					{% endif %}
+
 					<div class="form-group">
 						<label class=" col-form-label">Status:</label>
 						<div class="">

@@ -27,6 +27,9 @@
 					<thead class="thead-light">
 						<tr>
 							<th scope="col" class="sort" data-sort="name">Store name</th>
+							{% if orgid == None %}
+							<th scope="col" class="sort" data-sort="addres">Organization</th>
+							{% endif %}
 							<th scope="col" class="sort" data-sort="addres">Address</th>
 							<th scope="col" class="sort" data-sort="status">Status</th>
 							<th scope="col" class="sort" data-sort="created">Created</th>
@@ -46,6 +49,11 @@
 								</div>
 							</div>
 						</th>
+						{% if orgid == None %}
+						<td class="">
+							{{ store.organization }}
+						</td>
+						{% endif %}
 						<td class="budget">
 							{{ store.address }}
 						</td>
@@ -85,7 +93,12 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/store_add/{{ orgid }}" class="btn btn-primary">Add New Record</a></center>
+{% if orgid == None %}
+	<center><a href="/backoffice/store_add" class="btn btn-primary">Add New Record</a></center>
+{% else %}
+	<center><a href="/backoffice/store_add/{{ orgid }}" class="btn btn-primary">Add New Record</a></center>
+{% endif %}
+
 {% endblock %}
 
 {% block script %}
