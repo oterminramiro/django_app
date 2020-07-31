@@ -11,49 +11,51 @@
 		<div class="card pb-2">
 			<!-- Card header -->
 			<div class="card-header border-0">
-				<h3 class="mb-0">Users</h3>
+				<h3 class="mb-0">Customers</h3>
 			</div>
 			<!-- Light table -->
 			<div class="table-responsive">
 				<table class="table align-items-center table-flush" id="myTable">
 					<thead class="thead-light">
 						<tr>
-							<th scope="col" class="sort" data-sort="name">Username</th>
-							<th scope="col" class="sort" data-sort="status">Role</th>
-							<th scope="col" class="sort" data-sort="status">Full name</th>
+							<th scope="col" class="sort" data-sort="name">Full name</th>
+							<th scope="col" class="sort" data-sort="status">Phone</th>
+							<th scope="col" class="sort" data-sort="status">Email</th>
+							<th scope="col" class="sort" data-sort="status">Birthday</th>
 							<th scope="col" class="sort" data-sort="created">Created</th>
 							<th scope="col" class="sort text-center" data-sort="action">Action</th>
 						</tr>
 					</thead>
 					<tbody class="list">
-					{% for user in users %}
+					{% for customer in customers %}
 					<tr>
 						<th scope="row">
 							<div class="media align-items-center">
 								<a href="#" class="avatar rounded-circle mr-3">
-									<img alt="Store logo" src="{% static "/img/theme/vue.jpg" %}">
+									<img alt="Customer logo" src="{% static "/img/theme/vue.jpg" %}">
 								</a>
 								<div class="media-body">
-									<span class="name mb-0 text-sm">{{ user.username }}</span>
+									<span class="name mb-0 text-sm">{{ customer.name }} {{ customer.lastname }}</span>
 								</div>
 							</div>
 						</th>
 						<td>
 							<span class="badge badge-dot mr-4">
 								<i class="bg-success"></i>
-								<span class="status">{{ user.role.name }}</span>
+								<span class="status">{{ customer.phone }}</span>
 							</span>
 						</td>
 						<td>
-							{{ user.get_full_name }}
+							{{ customer.email }}
 						</td>
 						<td>
-							{{ user.date_joined }}
+							{{ customer.birthday }}
+						</td>
+						<td>
+							{{ customer.created }}
 						</td>
 						<td class="text-center">
-							<a class="btn btn-success" style="padding: .5rem 1rem;" href="/backoffice/user_edit/{{ user.id }}">Edit</a>
-							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/user_destroy/{{ user.id }}">Delete</a>
-							<a class="btn btn-info" style="padding: .5rem 1rem;" href="/backoffice/user_org_show/{{ user.id }}">Organizations</a>
+							<a class="btn btn-danger" style="padding: .5rem 1rem;" href="/backoffice/customer_destroy/{{ customer.id }}">Delete</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -64,7 +66,6 @@
 	</div>
 </div>
 
-<center><a href="/backoffice/user_add" class="btn btn-primary">Add New Record</a></center>
 {% endblock %}
 
 {% block script %}

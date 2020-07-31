@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog
+from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog, Customer
 from users.models import User, UserOrganization
 from .forms import OrganizationForm, StoreForm, ItemForm, UserAddForm, UserEditForm, UserOrgAddForm
 
@@ -324,3 +324,17 @@ class UserCrud(object):
 		user_org.delete()
 
 		return redirect("/backoffice/user_org_show/" + str(userid) )
+
+class CustomerCrud(object):
+	def customer_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		customers = Customer.objects.all()
+		return render(request,"backoffice/customer/show.html",{'customers':customers})
+
+	def customer_destroy(request, id):
+		if not (is_auth(request)): return redirect('/users/login')
+
+		customer = Customer.objects.get(id=id)
+		customer.delete()
+
+		return redirect("/backoffice/customer_show" )
