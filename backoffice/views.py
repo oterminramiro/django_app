@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog, Customer
 from users.models import User, UserOrganization
 from .forms import OrganizationForm, StoreForm, ItemForm, UserForm, UserEditForm, UserOrgAddForm
@@ -9,7 +10,7 @@ class OrganizationCrud(object):
 
 	def organization_show(request):
 		if not (is_auth(request)): return redirect('/users/login')
-		organization = Organization.objects.all()
+		organization = Organization.objects.all().order_by('id')
 		return render(request,"backoffice/organization/show.html",{'organizations':organization})
 
 	def organization_add(request):
@@ -46,8 +47,11 @@ class OrganizationCrud(object):
 	def organization_destroy(request, id):
 		if not (is_auth(request)): return redirect('/users/login')
 		organization = Organization.objects.get(id=id)
-		organization.delete()
-		return redirect("/backoffice/organization_show")
+		try:
+			delete = organization.delete()
+			return HttpResponse(True)
+		except Exception as e:
+			return HttpResponse(False)
 
 class StoreCrud(object):
 
@@ -55,9 +59,9 @@ class StoreCrud(object):
 		if not (is_auth(request)): return redirect('/users/login')
 
 		if(orgid != None):
-			stores = Store.objects.filter(organization = orgid)
+			stores = Store.objects.filter(organization = orgid).order_by('id')
 		else:
-			stores = Store.objects.all()
+			stores = Store.objects.all().order_by('id')
 		return render(request,"backoffice/store/show.html",{'stores':stores, 'orgid': orgid})
 
 	def store_add(request, orgid = None):
@@ -100,7 +104,7 @@ class StoreCrud(object):
 			form = StoreForm(request.POST, request.FILES, instance = store)
 			if form.is_valid():
 				form.save()
-				return redirect("/backoffice/store_show/" + str(orgid) )
+				return redirect('/backoffice/store_show')
 		else:
 			form = StoreForm(instance = store)
 
@@ -115,8 +119,11 @@ class StoreCrud(object):
 		store = Store.objects.get(id=id)
 		orgid = store.organization.id
 
-		store.delete()
-		return redirect("/backoffice/store_show/" + str(orgid) )
+		try:
+			delete = store.delete()
+			return HttpResponse(True)
+		except Exception as e:
+			return HttpResponse(False)
 
 class ItemCrud(object):
 
@@ -126,12 +133,11 @@ class ItemCrud(object):
 		if(storeid != None):
 			# get orgid for return button
 			store = Store.objects.filter(id = storeid)[0]
-			items = Item.objects.filter(store = storeid)
+			items = Item.objects.filter(store = storeid).order_by('id')
 			return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid, 'orgid':store.organization.id})
 		else:
-			items = Item.objects.all()
+			items = Item.objects.all().order_by('id')
 			return render(request,"backoffice/item/show.html",{'items':items , 'storeid':storeid})
-
 
 	def item_add(request, storeid = None):
 
@@ -186,8 +192,11 @@ class ItemCrud(object):
 		item = Item.objects.get(id=id)
 		storeid = item.store.id
 
-		item.delete()
-		return redirect("/backoffice/item_show/" + str(storeid) )
+		try:
+			delete = item.delete()
+			return HttpResponse(True)
+		except Exception as e:
+			return HttpResponse(False)
 
 class OrderCrud(object):
 	def order_show(request):
@@ -319,9 +328,12 @@ class UserCrud(object):
 		if not (is_auth(request)): return redirect('/users/login')
 
 		user = User.objects.get(id=id)
-		user.delete()
+		try:
+			delete = user.delete()
+			return HttpResponse(True)
+		except Exception as e:
+			return HttpResponse(False)
 
-		return redirect("/backoffice/user_show" )
 
 	def user_org_show(request, userid):
 		if not (is_auth(request)): return redirect('/users/login')
@@ -374,6 +386,8 @@ class CustomerCrud(object):
 		if not (is_auth(request)): return redirect('/users/login')
 
 		customer = Customer.objects.get(id=id)
-		customer.delete()
-
-		return redirect("/backoffice/customer_show" )
+		try:
+			delete = customer.delete()
+			return HttpResponse(True)
+		except Exception as e:
+			return HttpResponse(False)

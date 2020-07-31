@@ -21,7 +21,7 @@
 		{% endif %}
 
 		{% if storeid == None %}
-			<form method="POST" class="" action="/backoffice/item_add/" enctype="multipart/form-data">
+			<form method="POST" class="" action="/backoffice/item_add" enctype="multipart/form-data">
 		{% else %}
 			<form method="POST" class="" action="/backoffice/item_add/{{ storeid }}" enctype="multipart/form-data">
 		{% endif %}

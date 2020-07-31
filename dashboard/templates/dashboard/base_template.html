@@ -189,11 +189,13 @@
 	<script src="{% static "vendor/chart.js/dist/Chart.extension.js" %}"></script>
 	<script src="{% static "js/argon.js" %}"></script>
 
+
+
 	<script type="text/javascript">
-		let url = window.location.pathname;
+		let actual_url = window.location.pathname;
 
 		$("a").each(function(){
-			if ($(this).attr("href") == url){
+			if ($(this).attr("href") == actual_url){
 				$(this).addClass("active");
 			}
 		});

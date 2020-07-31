@@ -1,67 +1,73 @@
-{% extends 'dashboard/base_template.html' %}
-
-{% block content %}
-
-
-<div class="card mt-5 mx-auto" style="width:50%">
-	<div class="card-body">
-		{% if form.errors %}
-			{% for field in form %}
-				{% for error in field.errors %}
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	<div class="modal-content">
+		<div class="modal-header" style="padding-bottom: 0;">
+			<!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body" style="padding-top: 0;">
+			{% if form.errors %}
+				{% for field in form %}
+					{% for error in field.errors %}
+						<div class="alert alert-danger">
+							<strong>error field {{ error|escape }}</strong>
+						</div>
+					{% endfor %}
+				{% endfor %}
+				{% for error in form.non_field_errors %}
 					<div class="alert alert-danger">
-						<strong>error field {{ error|escape }}</strong>
+						<strong>{{ error|escape }}</strong>
 					</div>
 				{% endfor %}
-			{% endfor %}
-			{% for error in form.non_field_errors %}
-				<div class="alert alert-danger">
-					<strong>{{ error|escape }}</strong>
-				</div>
-			{% endfor %}
-		{% endif %}
-		<form method="POST" class="" action="/backoffice/user_edit/{{user.id}}">
-			{% csrf_token %}
-			<div class="container">
-				<br>
-				<div class="form-group row">
-					<div class="col-sm-12 text-center">
-						<h3>Update Details</h3>
+			{% endif %}
+			<form method="POST" class="" action="/backoffice/user_edit/{{user.id}}">
+				{% csrf_token %}
+				<div class="container">
+					<br>
+					<div class="form-group row">
+						<div class="col-sm-12 text-center">
+							<h3>Update Details</h3>
+						</div>
+					</div>
+					<div class="mx-auto mb-3" style="width:75%">
+						<div class="form-group">
+							<label class=" col-form-label">Username:</label>
+							<div class="">
+							  {{ form.username }}
+							</div>
+					 	</div>
+						<div class="form-group">
+							<label class=" col-form-label">Email:</label>
+							<div class="">
+							  {{ form.email }}
+							</div>
+					 	</div>
+						<div class="form-group">
+							<label class=" col-form-label">Name:</label>
+							<div class="">
+							  {{ form.first_name }}
+							</div>
+					 	</div>
+						<div class="form-group">
+							<label class=" col-form-label">Lastname:</label>
+							<div class="">
+							  {{ form.last_name }}
+							</div>
+					 	</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-sm-12 text-center">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-success">Update</button>
+						</div>
 					</div>
 				</div>
-				<div class="mx-auto mb-3" style="width:75%">
-					<div class="form-group">
-						<label class=" col-form-label">Username:</label>
-						<div class="">
-						  {{ form.username }}
-						</div>
-				 	</div>
-					<div class="form-group">
-						<label class=" col-form-label">Email:</label>
-						<div class="">
-						  {{ form.email }}
-						</div>
-				 	</div>
-					<div class="form-group">
-						<label class=" col-form-label">Name:</label>
-						<div class="">
-						  {{ form.first_name }}
-						</div>
-				 	</div>
-					<div class="form-group">
-						<label class=" col-form-label">Lastname:</label>
-						<div class="">
-						  {{ form.last_name }}
-						</div>
-				 	</div>
-				</div>
-				<div class="form-group row">
-					<div class="col-sm-12 text-center">
-						<button type="submit" class="btn btn-success">Update</button>
-					</div>
-				</div>
-			</div>
-		</form>
+			</form>
+		</div>
+		<!-- <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		</div> -->
 	</div>
 </div>
-
-{% endblock %}
