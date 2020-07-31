@@ -31,8 +31,12 @@ urlpatterns = [
 	path('order_show', views.OrderCrud.order_show),
 	path('order_log/<int:orderid>', views.OrderCrud.order_log),
 
-	path('user_show', views.UserCrud.user_show),
-	path('user_add', views.UserCrud.user_add),
+	path('owner_show', views.UserCrud.owner_show),
+	path('owner_add', views.UserCrud.owner_add),
+
+	path('seller_show', views.UserCrud.seller_show),
+	path('seller_add', views.UserCrud.seller_add),
+
 	path('user_edit/<int:id>', views.UserCrud.user_edit),
 	path('user_destroy/<int:id>', views.UserCrud.user_destroy),
 

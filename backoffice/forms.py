@@ -34,7 +34,7 @@ class ItemForm(forms.ModelForm):
 
 class UserAddForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
-		super(UserForm, self).__init__(*args, **kwargs)
+		super(UserAddForm, self).__init__(*args, **kwargs)
 		for visible in self.visible_fields():
 			visible.field.widget.attrs['class'] = 'form-control'
 

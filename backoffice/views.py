@@ -237,26 +237,62 @@ class OrderCrud(object):
 		return render(request,"backoffice/order/log.html",{'logs':response})
 
 class UserCrud(object):
-	def user_show(request):
-		if not (is_auth(request)): return redirect('/users/login')
-		users = User.objects.exclude(role=1)
-		return render(request,"backoffice/user/show.html",{'users':users})
 
-	def user_add(request):
+	def owner_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		users = User.objects.filter(role=2)
+		return render(request,"backoffice/user/owner_show.html",{'users':users})
+
+	def owner_add(request):
 
 		if not (is_auth(request)): return redirect('/users/login')
 		if request.method == "POST":
 
+			request.POST._mutable = True
+			request.POST['role'] = 2
+
 			form = UserAddForm(request.POST)
 			if form.is_valid():
-				form.save()
-				return redirect("/backoffice/user_show" )
+				# Hash password and save
+				user = form.save(commit=False)
+				password = form.cleaned_data['password']
+				user.set_password(password)
+				user.save()
+				return redirect("/backoffice/owner_show" )
 			else:
 				pass
 		else:
 			form = UserAddForm()
 		context = {'form': form}
-		return render(request,'backoffice/user/add.html',context)
+		return render(request,'backoffice/user/owner_add.html',context)
+
+	def seller_show(request):
+		if not (is_auth(request)): return redirect('/users/login')
+		users = User.objects.filter(role=3)
+		return render(request,"backoffice/user/seller_show.html",{'users':users})
+
+	def seller_add(request):
+
+		if not (is_auth(request)): return redirect('/users/login')
+		if request.method == "POST":
+
+			request.POST._mutable = True
+			request.POST['role'] = 3
+
+			form = UserAddForm(request.POST)
+			if form.is_valid():
+				# Hash password and save
+				user = form.save(commit=False)
+				password = form.cleaned_data['password']
+				user.set_password(password)
+				user.save()
+				return redirect("/backoffice/seller_show" )
+			else:
+				pass
+		else:
+			form = UserAddForm()
+		context = {'form': form}
+		return render(request,'backoffice/user/seller_add.html',context)
 
 	def user_edit(request, id):
 		if not (is_auth(request)): return redirect('/users/login')
