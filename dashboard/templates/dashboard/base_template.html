@@ -12,67 +12,119 @@
 	<link rel="stylesheet" href="{% static "vendor/nucleo/css/nucleo.css" %}" type="text/css">
 	<link rel="stylesheet" href="{% static "vendor/@fortawesome/fontawesome-free/css/all.min.css" %}" type="text/css">
 	<link rel="stylesheet" href="{% static "css/argon.css" %}" type="text/css">
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
 	{% block css %}
 	{% endblock %}
 </head>
 
 <body>
+
 	<!-- Sidenav -->
 	<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
 		<div class="scrollbar-inner">
 			<!-- Brand -->
-			<div class="sidenav-header  align-items-center">
-				<a class="navbar-brand" href="javascript:void(0)">
-					<img src="{% static "img/brand/blue.png"  %}" class="navbar-brand-img" alt="...">
+			<div class="sidenav-header  d-flex  align-items-center">
+				<a class="navbar-brand" href="/">
+					<img src="{% static "/img/brand/blue.png" %}" class="navbar-brand-img" alt="...">
 				</a>
+				<div class="ml-auto ">
+				<!-- Sidenav toggler -->
+					<div class="sidenav-toggler d-none d-xl-block" data-action="sidenav-unpin" data-target="#sidenav-main">
+						<div class="sidenav-toggler-inner">
+							<i class="sidenav-toggler-line"></i>
+							<i class="sidenav-toggler-line"></i>
+							<i class="sidenav-toggler-line"></i>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="navbar-inner">
 				<!-- Collapse -->
 				<div class="collapse navbar-collapse" id="sidenav-collapse-main">
-					<!-- Nav items -->
 					<ul class="navbar-nav">
+						<!-- Nav items -->
 						<li class="nav-item">
 							<a class="nav-link" href="/">
-							<i class="ni ni-tv-2 text-primary"></i>
+								<i class="ni ni-chart-bar-32 text-red"></i>
 								<span class="nav-link-text">Dashboard</span>
 							</a>
 						</li>
+					</ul>
+					<!-- Divider -->
+					<hr class="my-3">
+					<!-- Heading -->
+					<h6 class="navbar-heading p-0 text-muted">
+						<span class="docs-normal">Main</span>
+					</h6>
+					<!-- Navigation -->
+					<ul class="navbar-nav mb-md-3">
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/organization_show">
-							<i class="ni ni-building"></i>
+								<i class="ni ni-building"></i>
 								<span class="nav-link-text">Organization</span>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/store_show">
-							<i class="ni ni-shop"></i>
+								<i class="ni ni-shop"></i>
 								<span class="nav-link-text">Stores</span>
 							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/item_show">
-							<i class="ni ni-bag-17"></i>
+								<i class="ni ni-bag-17"></i>
 								<span class="nav-link-text">Items</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/backoffice/order_show">
-							<i class="ni ni-box-2"></i>
-								<span class="nav-link-text">Orders</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/backoffice/user_show">
-							<i class="ni ni-single-02"></i>
-								<span class="nav-link-text">Users</span>
 							</a>
 						</li>
 					</ul>
 					<!-- Divider -->
+					<hr class="my-3">
+					<!-- Heading -->
+					<h6 class="navbar-heading p-0 text-muted">
+						<span class="docs-normal">Users</span>
+					</h6>
+					<ul class="navbar-nav">
+					<!-- Navigation -->
+						<li class="nav-item">
+							<a class="nav-link" href="#navbar-dashboards" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-dashboards">
+								<i class="ni ni-badge"></i>
+								<span class="nav-link-text">Users</span>
+							</a>
+							<div class="collapse" id="navbar-dashboards" style="">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item">
+										<a href="../../pages/maps/google.html" class="nav-link">
+											<span class="sidenav-normal"> Owners </span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="../../pages/maps/vector.html" class="nav-link">
+											<span class="sidenav-normal"> Sellers </span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/backoffice/item_show">
+								<i class="ni ni-single-02"></i>
+								<span class="nav-link-text">Customers</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/backoffice/order_show">
+								<i class="ni ni-box-2"></i>
+								<span class="nav-link-text">Orders</span>
+							</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 	</nav>
+	<!-- Sidenav end -->
+
 	<!--  Nav -->
 	<div class="main-content" id="panel">
 		<!-- Topnav -->
