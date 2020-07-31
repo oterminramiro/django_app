@@ -32,15 +32,15 @@ class ItemForm(forms.ModelForm):
 		model = Item
 		fields = "__all__"
 
-class UserAddForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
-		super(UserAddForm, self).__init__(*args, **kwargs)
+		super(UserForm, self).__init__(*args, **kwargs)
 		for visible in self.visible_fields():
 			visible.field.widget.attrs['class'] = 'form-control'
 
 	class Meta:
 		model = User
-		fields = ['role', 'username','email','password']
+		fields = ['role', 'username','email','first_name','last_name','password']
 
 class UserEditForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
@@ -50,7 +50,7 @@ class UserEditForm(forms.ModelForm):
 
 	class Meta:
 		model = User
-		fields = ['username','first_name','last_name','email']
+		fields = ['username','email','first_name','last_name']
 
 class UserOrgAddForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):

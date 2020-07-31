@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog, Customer
 from users.models import User, UserOrganization
-from .forms import OrganizationForm, StoreForm, ItemForm, UserAddForm, UserEditForm, UserOrgAddForm
+from .forms import OrganizationForm, StoreForm, ItemForm, UserForm, UserEditForm, UserOrgAddForm
 
 from utils.views import is_auth
 
@@ -251,7 +251,7 @@ class UserCrud(object):
 			request.POST._mutable = True
 			request.POST['role'] = 2
 
-			form = UserAddForm(request.POST)
+			form = UserForm(request.POST)
 			if form.is_valid():
 				# Hash password and save
 				user = form.save(commit=False)
@@ -262,7 +262,7 @@ class UserCrud(object):
 			else:
 				pass
 		else:
-			form = UserAddForm()
+			form = UserForm()
 		context = {'form': form}
 		return render(request,'backoffice/user/owner_add.html',context)
 
@@ -279,7 +279,7 @@ class UserCrud(object):
 			request.POST._mutable = True
 			request.POST['role'] = 3
 
-			form = UserAddForm(request.POST)
+			form = UserForm(request.POST)
 			if form.is_valid():
 				# Hash password and save
 				user = form.save(commit=False)
@@ -290,7 +290,7 @@ class UserCrud(object):
 			else:
 				pass
 		else:
-			form = UserAddForm()
+			form = UserForm()
 		context = {'form': form}
 		return render(request,'backoffice/user/seller_add.html',context)
 
@@ -304,7 +304,10 @@ class UserCrud(object):
 			form = UserEditForm(request.POST, instance = user)
 			if form.is_valid():
 				form.save()
-				return redirect("/backoffice/user_show" )
+				if user.role_id == 2:
+					return redirect("/backoffice/owner_show" )
+				if user.role_id == 3:
+					return redirect("/backoffice/seller_show" )
 		else:
 			form = UserEditForm(instance = user)
 
