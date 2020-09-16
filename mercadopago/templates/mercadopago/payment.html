@@ -1,0 +1,80 @@
+{% extends 'dashboard/base_template.html' %}
+
+{% block content %}
+
+	<h3>New Card</h3>
+	<form action="/mercadopago/payment/" method="post" id="pay" name="pay" >
+		{% csrf_token %}
+		<fieldset>
+			<ul>
+				<li>
+ 					<label>Payment Method:</label>
+				    <select id="cardId" name="cardId" data-checkout='cardId'>
+				        <option value="1600274215991"
+				            first_six_digits="450995"
+				            security_code_length="3">
+				                visa finalizada en 3704
+				        </option>
+				    </select>
+   				</li>
+				<li>
+				    <label for="cvv">Security code:</label>
+				    <input type="text" id="cvv" data-checkout="securityCode" placeholder="123" />
+				</li>
+			</ul>
+			<input name="customer_mp_id" value="523839858-5OxYrmPaNezikV" />
+			<input name="description"/>
+			<input name="paymentMethodId" />
+			<input type="submit" value="Pay!" />
+		</fieldset>
+	</form>
+
+{% endblock %}
+
+{% block script %}
+	<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+	<script src="https://www.mercadopago.com/v2/security.js" /></script>
+	<script type="text/javascript">
+		window.Mercadopago.setPublishableKey("TEST-9da7390a-ddf3-4db5-9ebf-3cbbea577844");
+		window.Mercadopago.getIdentificationTypes();
+
+		function addEvent(to, type, fn){
+			if(document.addEventListener){
+				to.addEventListener(type, fn, false);
+			} else if(document.attachEvent){
+				to.attachEvent('on'+type, fn);
+			} else {
+				to['on'+type] = fn;
+			}
+		};
+
+		doSubmit = false;
+		addEvent(document.querySelector('#pay'), 'submit', doPay);
+		function doPay(event){
+			event.preventDefault();
+			if(!doSubmit){
+				var $form = document.querySelector('#pay');
+
+				window.Mercadopago.createToken($form, sdkResponseHandler); // The function "sdkResponseHandler" is defined below
+
+				return false;
+			}
+		};
+
+		function sdkResponseHandler(status, response) {
+			if (status != 200 && status != 201) {
+				alert("verify filled data");
+			}else{
+				var form = document.querySelector('#pay');
+				var card = document.createElement('input');
+				card.setAttribute('name', 'token');
+				card.setAttribute('type', 'hidden');
+				card.setAttribute('value', response.id);
+				form.appendChild(card);
+				doSubmit=true;
+				form.submit();
+			}
+		};
+
+	</script>
+{% endblock %}

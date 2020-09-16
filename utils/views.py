@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
+from rest_framework.response import Response
+from rest_framework import status
 from orders_api.models import Customer
 import jwt
+import json
 
 def is_auth(request):
 	if request.user.is_authenticated:
@@ -20,3 +23,17 @@ def jwt_token(request):
 		return True
 	else:
 		return False
+
+def check_role(request,roles):
+	for role in roles:
+		if role == request.user.role.name:
+			return True
+
+	return False
+
+def returnResponse(request, data, status, code):
+	response = {
+		'success': status,
+		'data': data,
+	}
+	return Response( response , status = code )

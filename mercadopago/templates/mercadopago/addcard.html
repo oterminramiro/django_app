@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>New Card</title>
-	<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
-</head>
-<body>
+{% extends 'dashboard/base_template.html' %}
+
+{% block content %}
+
 	<h3>New Card</h3>
-	<form action="/mercadopago/savecard" method="post" id="savecard" name="savecard" >
+	<form action="/mercadopago/save_card/" method="post" id="savecard" name="savecard" >
+		{% csrf_token %}
 		<fieldset>
 			<ul>
 				<li>
@@ -22,15 +17,15 @@
 				</li>
 				<li>
 					<label for="cardExpirationMonth">Expiration month:</label>
-					<input type="text" id="cardExpirationMonth" data-checkout="cardExpirationMonth" value="12" placeholder="12" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
+					<input type="text" id="cardExpirationMonth" data-checkout="cardExpirationMonth" value="11" placeholder="11" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
 				</li>
 				<li>
 					<label for="cardExpirationYear">Expiration year:</label>
-					<input type="text" id="cardExpirationYear" data-checkout="cardExpirationYear" value="2020" placeholder="2015" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
+					<input type="text" id="cardExpirationYear" data-checkout="cardExpirationYear" value="2025" placeholder="2025" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
 				</li>
 				<li>
 					<label for="cardholderName">Card holder name:</label>
-					<input type="text" id="cardholderName" data-checkout="cardholderName" value="APRObado" placeholder="APRO" />
+					<input type="text" id="cardholderName" data-checkout="cardholderName" value="APRO" placeholder="APRO" />
 				</li>
 				<li>
 					<label for="docType">Document type:</label>
@@ -38,15 +33,20 @@
 				</li>
 				<li>
 					<label for="docNumber">Document number:</label>
-					<input type="text" id="docNumber" data-checkout="docNumber" value="12345678" placeholder="12345678" />
+					<input type="text" id="docNumber" data-checkout="docNumber" value="42395005" placeholder="42395005" />
 				</li>
 			</ul>
 			<input type="submit" value="Save!" />
 		</fieldset>
 	</form>
 
+{% endblock %}
+
+{% block script %}
+	<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+	<script src="https://www.mercadopago.com/v2/security.js" /></script>
 	<script type="text/javascript">
-	window.Mercadopago.setPublishableKey("TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134");
+	window.Mercadopago.setPublishableKey("TEST-9da7390a-ddf3-4db5-9ebf-3cbbea577844");
 	window.Mercadopago.getIdentificationTypes();
 
 	function addEvent(to, type, fn){
@@ -142,5 +142,4 @@
 	};
 
 	</script>
-	</body>
-</html>
+{% endblock %}
