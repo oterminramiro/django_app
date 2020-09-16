@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from django.core import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from utils.views import returnResponse, jwt_token
 import requests, json, jwt
-from orders_api.models import Customer
+from orders_api.models import Customer, DocumentType
 from django.conf import settings
 
 class CreateCustomer(APIView):
@@ -16,14 +17,15 @@ class CreateCustomer(APIView):
 		customer = Customer.objects.filter(phone=token['phone']).first()
 		if customer:
 			url = "https://api.mercadopago.com/v1/customers?access_token=" + settings.MP_ACCESS_TOKEN
+			documentType = DocumentType.objects.filter(id=customer.documentType_id).first()
 
 			payload = {
 				"email": customer.email,
 				"first_name": customer.name,
 				"last_name": customer.lastname,
 				"identification": {
-					"type": "DNI",
-					"number": "42395005"
+					"type": documentType.key if documentType != None else None,
+					"number": customer.documentNumber
 				}
 			}
 			headers = {
@@ -31,6 +33,11 @@ class CreateCustomer(APIView):
 			}
 
 			response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+
+			mp_id = json.loads( response.text ).get("id")
+
+			customer.idmercadopago = mp_id
+			customer.save()
 
 			return returnResponse( request, json.loads( response.text ) , True , 200 )
 		else:

@@ -15,6 +15,13 @@ class PaymentMethod(models.Model):
 	def __str__(self):
 		return self.name
 
+class DocumentType(models.Model):
+	name = models.CharField(max_length=100)
+	key = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name
+
 class ShippingMethod(models.Model):
 	name = models.CharField(max_length=100)
 	key = models.CharField(max_length=100)
@@ -63,6 +70,9 @@ class Customer(models.Model):
 	phone = models.CharField(unique=True,max_length=100)
 	email = models.CharField(unique=True,max_length=100, blank=True)
 	birthday = models.DateField(blank=True)
+	documentType = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
+	documentNumber = models.CharField(unique=True,max_length=100, blank=True)
+	idmercadopago = models.CharField(max_length=200, blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

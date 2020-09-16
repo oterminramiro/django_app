@@ -4,11 +4,15 @@ from orders_api.models import Status, Organization, Store, Item, Order, OrderIte
 from users.models import User, UserOrganization
 from .forms import OrganizationForm, StoreForm, ItemForm, UserForm, UserEditForm, UserOrgAddForm
 
-from utils.views import is_auth
+from utils.views import is_auth, check_role
 
 class OrganizationCrud(object):
 
 	def organization_show(request):
+
+		checkrole = check_role(request,['SELLER','ADMIN'])
+		raise Exception(checkrole)
+		
 		if not (is_auth(request)): return redirect('/users/login')
 		organization = Organization.objects.all().order_by('id')
 		return render(request,"backoffice/organization/show.html",{'organizations':organization})
