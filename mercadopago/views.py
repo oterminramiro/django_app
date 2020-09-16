@@ -1,27 +1,45 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-import requests
-import json
-
-from utils.views import returnResponse
+from utils.views import returnResponse, jwt_token
+import requests, json, jwt
+from orders_api.models import Customer
+from django.conf import settings
 
 class CreateCustomer(APIView):
 	def post(self,request):
-		url = "https://api.mercadopago.com/v1/customers?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
 
-		payload = request.data
-		headers = {
-			'Content-Type': 'application/json'
-		}
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			url = "https://api.mercadopago.com/v1/customers?access_token=" + settings.MP_ACCESS_TOKEN
 
-		response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+			payload = {
+				"email": customer.email,
+				"first_name": customer.name,
+				"last_name": customer.lastname,
+				"identification": {
+					"type": "DNI",
+					"number": "42395005"
+				}
+			}
+			headers = {
+				'Content-Type': 'application/json'
+			}
 
-		return Response( json.loads( response.text ) )
+			response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+
+			return returnResponse( request, json.loads( response.text ) , True , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
+
 
 class FindCustomer(APIView):
 	def post(self,request):
-		url = "https://api.mercadopago.com/v1/customers/search?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
 
 		email = request.POST.get('email', '')
 		payload = {'email': email}
@@ -46,7 +64,7 @@ class FindCustomer(APIView):
 class ListCard(APIView):
 	def post(self,request):
 
-		url = "https://api.mercadopago.com/v1/customers/search?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
 
 		email = request.POST.get('email', '')
 		payload = {'email': email}
@@ -57,7 +75,7 @@ class ListCard(APIView):
 		response = requests.request("GET", url, headers=headers, data = payload)
 		customer_id = json.loads( response.text ).get('results')[0].get('id')
 
-		url = "https://api.mercadopago.com/v1/customers/" + customer_id + "/cards?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		url = "https://api.mercadopago.com/v1/customers/" + customer_id + "/cards?access_token=" + settings.MP_ACCESS_TOKEN
 
 		payload = {}
 		headers= {}
@@ -71,7 +89,7 @@ class SaveCard(APIView):
 
 		token = request.POST.get('token', '')
 
-		url = "https://api.mercadopago.com/v1/customers/523839858-5OxYrmPaNezikV/cards?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		url = "https://api.mercadopago.com/v1/customers/523839858-5OxYrmPaNezikV/cards?access_token=" + settings.MP_ACCESS_TOKEN
 
 		payload = {'token': token}
 		headers = {
@@ -88,7 +106,7 @@ class SaveCardView(object):
 
 class Payment(APIView):
 	def post(self,request):
-		url = "https://api.mercadopago.com/v1/payments?access_token=TEST-6220461586437789-121822-16fb0610d868f7102a31a386c3d4c56e-358482134"
+		url = "https://api.mercadopago.com/v1/payments?access_token=" + settings.MP_ACCESS_TOKEN
 		token = request.POST.get('token', '')
 		payload = {
 			"token":token,
@@ -99,9 +117,9 @@ class Payment(APIView):
 			"payer":{
 				"email":"ramiro@cubiq.digital",
 				"identification": {
-		            "number": "42395005",
-		            "type": "DNI"
-		        }
+					"number": "42395005",
+					"type": "DNI"
+				}
 			},
 			"binary_mode": True,
 			"external_reference":"DJANGO",

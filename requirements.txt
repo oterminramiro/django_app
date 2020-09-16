@@ -4,3 +4,4 @@ psycopg2-binary>=2.8
 twilio==6.44.0
 djangorestframework-jwt==1.11.0
 PyJWT==1.7.1
+python-decouple
