@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from utils.views import returnResponse, jwt_token
 import requests, json, jwt
-from orders_api.models import Customer, DocumentType
+from orders_api.models import Customer, DocumentType, Order
 from django.conf import settings
 
 class CreateCustomer(APIView):
@@ -16,96 +16,145 @@ class CreateCustomer(APIView):
 
 		customer = Customer.objects.filter(phone=token['phone']).first()
 		if customer:
-			url = "https://api.mercadopago.com/v1/customers?access_token=" + settings.MP_ACCESS_TOKEN
-			documentType = DocumentType.objects.filter(id=customer.documentType_id).first()
+			if customer.idmercadopago == None:
+				url = "https://api.mercadopago.com/v1/customers?access_token=" + settings.MP_ACCESS_TOKEN
+				documentType = DocumentType.objects.filter(id=customer.documentType_id).first()
 
-			payload = {
-				"email": customer.email,
-				"first_name": customer.name,
-				"last_name": customer.lastname,
-				"identification": {
-					"type": documentType.key if documentType != None else None,
-					"number": customer.documentNumber
+				payload = {
+					"email": customer.email,
+					"first_name": customer.name,
+					"last_name": customer.lastname,
+					"identification": {
+						"type": documentType.key if documentType != None else None,
+						"number": customer.documentNumber
+					}
 				}
-			}
-			headers = {
-				'Content-Type': 'application/json'
-			}
+				headers = {
+					'Content-Type': 'application/json'
+				}
 
-			response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+				response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+				if response.status_code == 200:
 
-			mp_id = json.loads( response.text ).get("id")
+					mp_id = json.loads( response.text ).get("id")
 
-			customer.idmercadopago = mp_id
-			customer.save()
+					customer.idmercadopago = mp_id
+					customer.save()
 
-			return returnResponse( request, json.loads( response.text ) , True , 200 )
+					return returnResponse( request, json.loads( response.text ) , True , 200 )
+				else:
+					return returnResponse( request, json.loads( response.text ).get('cause')[0].get('description') , False , response.status_code )
+			else:
+				return returnResponse( request, 'Customer is already register in mercadopago' , False , 200 )
 		else:
 			return returnResponse( request, 'Customer not found' , False , 200 )
 
-
 class FindCustomer(APIView):
 	def post(self,request):
-		url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
 
-		email = request.POST.get('email', '')
-		payload = {'email': email}
-		headers = {
-			'accept': 'application/json',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			if customer.email != None:
+				url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
 
-		response = requests.request("GET", url, headers=headers, data = payload)
+				payload = {'email': customer.email}
+				headers = {
+					'accept': 'application/json',
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 
-		result = json.loads( response.text ).get('results')[0]
-		dataResponse = {
-			'email' : result.get('email'),
-			'first_name' : result.get('first_name'),
-			'last_name' : result.get('last_name'),
-			'id' : result.get('id'),
-			'identification' : result.get('identification')
-		}
+				response = requests.request("GET", url, headers=headers, data = payload)
 
-		return returnResponse( request, dataResponse , True , 200 )
+				if response.status_code == 200:
+
+					result = json.loads( response.text ).get('results')[0]
+					dataResponse = {
+						'email' : result.get('email'),
+						'first_name' : result.get('first_name'),
+						'last_name' : result.get('last_name'),
+						'id' : result.get('id'),
+						'identification' : result.get('identification')
+					}
+
+					return returnResponse( request, dataResponse , True , 200 )
+
+				else:
+					return returnResponse( request, json.loads( response.text ).get('cause')[0].get('description') , False , response.status_code )
+
+			else:
+				return returnResponse( request, 'Customer email is none' , False , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
 class ListCard(APIView):
 	def post(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
 
-		url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			if customer.email != None:
+				url = "https://api.mercadopago.com/v1/customers/search?access_token=" + settings.MP_ACCESS_TOKEN
 
-		email = request.POST.get('email', '')
-		payload = {'email': email}
-		headers = {
-			'accept': 'application/json',
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-		response = requests.request("GET", url, headers=headers, data = payload)
-		customer_id = json.loads( response.text ).get('results')[0].get('id')
+				email = request.POST.get('email', '')
+				payload = {'email': email}
+				headers = {
+					'accept': 'application/json',
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+				response = requests.request("GET", url, headers=headers, data = payload)
+				customer_id = json.loads( response.text ).get('results')[0].get('id')
 
-		url = "https://api.mercadopago.com/v1/customers/" + customer_id + "/cards?access_token=" + settings.MP_ACCESS_TOKEN
+				url = "https://api.mercadopago.com/v1/customers/" + customer_id + "/cards?access_token=" + settings.MP_ACCESS_TOKEN
 
-		payload = {}
-		headers= {}
+				payload = {}
+				headers= {}
 
-		response = requests.request("GET", url, headers=headers, data = payload)
-
-		return returnResponse( request, json.loads( response.text ) , True , 200 )
+				response = requests.request("GET", url, headers=headers, data = payload)
+				if response.status_code == 200:
+					return returnResponse( request, json.loads( response.text ) , True , 200 )
+				else:
+					return returnResponse( request, json.loads( response.text ) , False , response.status_code )
+			else:
+				return returnResponse( request, 'Customer email is none' , False , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
 class SaveCard(APIView):
 	def post(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
 
-		token = request.POST.get('token', '')
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			if customer.idmercadopago != None:
+				token = request.POST.get('token', '')
 
-		url = "https://api.mercadopago.com/v1/customers/523839858-5OxYrmPaNezikV/cards?access_token=" + settings.MP_ACCESS_TOKEN
+				url = "https://api.mercadopago.com/v1/customers/" + customer.idmercadopago +"/cards?access_token=" + settings.MP_ACCESS_TOKEN
 
-		payload = {'token': token}
-		headers = {
-			'Content-Type': 'application/json'
-		}
+				payload = {'token': token}
+				headers = {
+					'Content-Type': 'application/json'
+				}
 
-		response = requests.request("GET", url, headers=headers, data = json.dumps(payload))
+				response = requests.request("GET", url, headers=headers, data = json.dumps(payload))
 
-		return Response( json.loads( response.text ) )
+				if response.status_code == 200:
+					return returnResponse( request, json.loads( response.text ) , True , 200 )
+				else:
+					return returnResponse( request, json.loads( response.text ) , False , response.status_code )
+			else:
+				return returnResponse( request, 'Customer idmercadopago is none' , False , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
 class SaveCardView(object):
 	def save_card_view(request):
@@ -113,32 +162,56 @@ class SaveCardView(object):
 
 class Payment(APIView):
 	def post(self,request):
-		url = "https://api.mercadopago.com/v1/payments?access_token=" + settings.MP_ACCESS_TOKEN
-		token = request.POST.get('token', '')
-		payload = {
-			"token":token,
-			"installments":1,
-			"transaction_amount":50,
-			"description":"Django api",
-			"payment_method_id":"visa",
-			"payer":{
-				"email":"ramiro@cubiq.digital",
-				"identification": {
-					"number": "42395005",
-					"type": "DNI"
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			if customer.email != None:
+				url = "https://api.mercadopago.com/v1/payments?access_token=" + settings.MP_ACCESS_TOKEN
+
+				token = request.POST.get('token', '')
+				idorder = request.POST.get('idorder', '')
+
+				order = Order.objects.filter(id=idorder).first()
+				if order == None:
+					return returnResponse( request, 'Order not found' , False , 404 )
+
+				documentType = DocumentType.objects.filter(id=customer.documentType_id).first()
+
+				payload = {
+					"token": token,
+					"installments": 1,
+					"transaction_amount": order.amount,
+					"description": "Django api",
+					"payer":{
+						"email": customer.email,
+						"identification": {
+							"number": customer.documentNumber,
+							"type": documentType.key if documentType != None else None,
+						}
+					},
+					"binary_mode": True,
+					"external_reference": "DJANGO",
+					"statement_descriptor": "Django"
 				}
-			},
-			"binary_mode": True,
-			"external_reference":"DJANGO",
-			"statement_descriptor":"Django"
-		}
-		headers = {
-			'Content-Type': 'application/json'
-		}
+				headers = {
+					'Content-Type': 'application/json'
+				}
 
-		response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
+				response = requests.request("POST", url, headers=headers, data = json.dumps(payload))
 
-		return returnResponse( request, json.loads( response.text ) , True , 200 )
+				if response.status_code == 200:
+					return returnResponse( request, json.loads( response.text ) , True , 200 )
+				else:
+					return returnResponse( request, json.loads( response.text ) , False , response.status_code )
+			else:
+				return returnResponse( request, 'Customer email is none' , False , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
+
 
 class PaymentView(object):
 	def payment_view(request):
