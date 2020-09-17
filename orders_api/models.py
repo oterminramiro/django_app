@@ -85,6 +85,8 @@ class OrderItemStatus(models.Model):
 
 class Order(models.Model):
 	customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+	amount = models.CharField(max_length=100, blank=True)
+	code = models.CharField(max_length=100)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 

@@ -196,8 +196,11 @@ class OrderCreate(APIView):
 
 		if customer:
 			if request.data:
-				order = Order.objects.create(customer_id = customer.id)
+				code = str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9))
+				code_final = 'R' + code
+				order = Order.objects.create(customer_id = customer.id, code = code)
 				if order:
+					price_item_total = 0
 					data = request.data['Items']
 					for items in data:
 						single_item = Item.objects.filter(id=items['ItemId'], store=items['StoreId']).first()
@@ -206,11 +209,15 @@ class OrderCreate(APIView):
 							return Response('Item not found')
 						else:
 							quantity = items['Quantity']
-							price_item = int(single_item.price) * int(quantity)
-							order_item = OrderItem.objects.create(customer_id = customer.id, price = price_item, quantity = quantity, item_id = single_item.id, status_id = 1, order_id = order.id)
+							price_item_total += int(single_item.price) * int(quantity)
+
+							order_item = OrderItem.objects.create(customer_id = customer.id, price = single_item.price, quantity = quantity, item_id = single_item.id, status_id = 1, order_id = order.id)
+
 							if(order_item):
 								order_item_log = OrderItemLog.objects.create(orderitem_id = order_item.id , status_id = order_item.status.id)
 
+					order.amount = price_item_total
+					order.save()
 					return Response('Order created')
 			else:
 				return Response('Post data null')
