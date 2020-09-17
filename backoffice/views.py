@@ -11,8 +11,8 @@ class OrganizationCrud(object):
 	def organization_show(request):
 
 		checkrole = check_role(request,['SELLER','ADMIN'])
-		raise Exception(checkrole)
-		
+		#raise Exception(checkrole)
+
 		if not (is_auth(request)): return redirect('/users/login')
 		organization = Organization.objects.all().order_by('id')
 		return render(request,"backoffice/organization/show.html",{'organizations':organization})

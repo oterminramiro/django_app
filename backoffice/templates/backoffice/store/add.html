@@ -21,7 +21,7 @@
 		{% endif %}
 
 		{% if orgid == None %}
-			<form method="POST" class="" action="/backoffice/store_add/" enctype="multipart/form-data">
+			<form method="POST" class="" action="/backoffice/store_add" enctype="multipart/form-data">
 		{% else %}
 			<form method="POST" class="" action="/backoffice/store_add/{{ orgid }}" enctype="multipart/form-data">
 		{% endif %}

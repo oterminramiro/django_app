@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import uuid
 
 class Status(models.Model):
 	name = models.CharField(max_length=100)
@@ -36,6 +37,7 @@ class Organization(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.CharField(max_length=100)
 	logo = models.FileField(upload_to='static/img/uploads/organization/')
+	guid = models.UUIDField(default=uuid.uuid4, editable=False)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 
@@ -48,6 +50,7 @@ class Store(models.Model):
 	name = models.CharField(max_length=100)
 	address = models.CharField(max_length=100)
 	logo = models.FileField(upload_to='static/img/uploads/store/')
+	guid = models.UUIDField(default=uuid.uuid4, editable=False)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 
@@ -61,6 +64,7 @@ class Item(models.Model):
 	price = models.CharField(max_length=100)
 	description = models.CharField(max_length=400)
 	logo = models.FileField(upload_to='static/img/uploads/logo/')
+	guid = models.UUIDField(default=uuid.uuid4, editable=False)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 
