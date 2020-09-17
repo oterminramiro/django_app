@@ -23,7 +23,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Store
-		fields = ('organization', 'status', 'name', 'address', 'logo', 'created', 'updated')
+		fields = ('organization', 'status', 'name', 'address', 'logo', 'guid', 'created', 'updated')
 		depth = 1
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'logo', 'created', 'updated')
+		fields = ('status', 'name', 'slug', 'paymentmethod', 'shippingmethod', 'logo', 'guid', 'created', 'updated')
 
 class ItemSerializer(serializers.ModelSerializer):
 	store = serializers.StringRelatedField(many=False)
@@ -42,7 +42,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Item
-		fields = ('status', 'store', 'name', 'price', 'description', 'logo', 'created', 'updated')
+		fields = ('status', 'store', 'name', 'price', 'description', 'logo', 'guid', 'created', 'updated')
 
 class CustomerSerializer(serializers.ModelSerializer):
 	def validate(self, data):

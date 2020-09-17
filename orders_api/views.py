@@ -12,7 +12,7 @@ from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organ
 from .models import CustomerCode as CustomerCodeModel
 from twilio.rest import Client
 
-from utils.views import jwt_token
+from utils.views import jwt_token, returnResponse
 
 
 # GET ALL USERS // POST FOR CREATE
@@ -112,11 +112,11 @@ class OrganizationList(generics.ListAPIView):
 		if jwt_token(request):
 			queryset = Organization.objects.filter(status_id = 1)
 			serializer = OrganizationSerializer(queryset, many=True)
-			return Response(serializer.data)
+			return returnResponse( request, serializer.data , True , 200 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
 
 # GET A SINGLE ORGANIZATION BY PK
 class OrganizationExist(generics.RetrieveAPIView):
@@ -124,73 +124,57 @@ class OrganizationExist(generics.RetrieveAPIView):
 		if jwt_token(request):
 			queryset = Organization.objects.filter(slug = slug , status_id = 1)
 			serializer = OrganizationSerializer(queryset, many=True)
-			return Response(serializer.data)
+			return returnResponse( request, serializer.data , True , 200 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
 
 # GET ALL STORES
 class StoreList(generics.ListAPIView):
 	def get(self,request):
+
 		if jwt_token(request):
+
 			orgid = request.data['org']
-			queryset = Store.objects.filter(organization = orgid , status_id = 1)
-			serializer = StoreSerializer(queryset, many=True)
-			return Response(serializer.data)
+			org = Organization.objects.filter(guid = orgid).first()
+			if org == None:
+				return returnResponse( request, 'Organization not found' , False , 200 )
+			else:
+				queryset = Store.objects.filter(organization = org.id , status_id = 1)
+				serializer = StoreSerializer(queryset, many=True)
+
+			return returnResponse( request, serializer.data , True , 200 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
-		return Response('server error')
-
-# GET A SINGLE STORE BY PK
-class StoreExist(generics.RetrieveAPIView):
-	def get(self,request,pk):
-		if jwt_token(request):
-			queryset = Store.objects.filter(id = pk , status_id = 1)
-			serializer = StoreSerializer(queryset, many=True)
-			return Response(serializer.data)
-		else:
-			return Response('Customer not found')
-
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
 
 # GET ALL ITEMS
 class ItemList(generics.ListAPIView):
 	def get(self,request):
 		if jwt_token(request):
+
 			storeid = request.data['store']
-			queryset = Item.objects.filter(store = storeid , status_id = 1)
+			store = Store.objects.filter(guid = storeid).first()
+			if store == None:
+				return returnResponse( request, 'Store not found' , False , 200 )
+
+			queryset = Item.objects.filter(store = store.id , status_id = 1)
 			serializer = ItemSerializer(queryset, many=True)
-			return Response(serializer.data)
+			return returnResponse( request, serializer.data , True , 200 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
 
-# GET A SINGLE ITEM BY PK
-class ItemExist(generics.RetrieveAPIView):
-	def get(self,request,pk):
-		if jwt_token(request):
-			queryset = Item.objects.filter(id = pk , status_id = 1)
-			serializer = ItemSerializer(queryset, many=True)
-			return Response(serializer.data)
-		else:
-			return Response('Customer not found')
-
-		return Response('server error')
-
-
-
-
-
-
+# CREATE ORDER
 class OrderCreate(APIView):
 	def post(self, request):
 		try:
 			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
 		except Exception as e:
-			return Response(str(e))
+			return returnResponse( request, str(e) , False , 500 )
 
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
@@ -203,10 +187,15 @@ class OrderCreate(APIView):
 					price_item_total = 0
 					data = request.data['Items']
 					for items in data:
-						single_item = Item.objects.filter(id=items['ItemId'], store=items['StoreId']).first()
+
+						store = Store.objects.filter(guid = storeid).first()
+						if store == None:
+							return returnResponse( request, 'Store not found' , False , 200 )
+
+						single_item = Item.objects.filter(guid = items['ItemId'], store = store.id ).first()
 
 						if not single_item:
-							return Response('Item not found')
+							return returnResponse( request, 'Item not found' , False , 200 )
 						else:
 							quantity = items['Quantity']
 							price_item_total += int(single_item.price) * int(quantity)
@@ -218,10 +207,10 @@ class OrderCreate(APIView):
 
 					order.amount = price_item_total
 					order.save()
-					return Response('Order created')
+					return returnResponse( request, order.code , true , 200 )
 			else:
-				return Response('Post data null')
+				return returnResponse( request, 'Post data null' , False , 400 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 200 )
 
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
