@@ -230,7 +230,7 @@ class OrderCreate(APIView):
 					data = request.data['Items']
 					for items in data:
 
-						store = Store.objects.filter(guid = storeid).first()
+						store = Store.objects.filter(guid = items['StoreId']).first()
 						if store == None:
 							return returnResponse( request, 'Store not found' , False , 200 )
 
