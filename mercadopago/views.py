@@ -156,6 +156,37 @@ class SaveCard(APIView):
 		else:
 			return returnResponse( request, 'Customer not found' , False , 200 )
 
+class DeleteCard(APIView):
+	def post(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500 )
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+		if customer:
+			if customer.idmercadopago != None:
+				token = request.POST.get('token', '')
+				cardid = request.POST.get('cadid', '')
+
+				url = "https://api.mercadopago.com/v1/customers/" + customer.idmercadopago +"/cards/"+ cardid + "?access_token=" + settings.MP_ACCESS_TOKEN
+
+				payload = {'token': token}
+				headers = {
+					'Content-Type': 'application/json'
+				}
+
+				response = requests.request("DELETE", url, headers=headers, data = json.dumps(payload))
+
+				if response.status_code == 200:
+					return returnResponse( request, json.loads( response.text ) , True , 200 )
+				else:
+					return returnResponse( request, json.loads( response.text ) , False , response.status_code )
+			else:
+				return returnResponse( request, 'Customer idmercadopago is none' , False , 200 )
+		else:
+			return returnResponse( request, 'Customer not found' , False , 200 )
+
 class SaveCardView(object):
 	def save_card_view(request):
 		return render(request,"mercadopago/addcard.html")
