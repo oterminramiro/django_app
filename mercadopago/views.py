@@ -167,7 +167,7 @@ class DeleteCard(APIView):
 		if customer:
 			if customer.idmercadopago != None:
 				token = request.POST.get('token', '')
-				cardid = request.POST.get('cadid', '')
+				cardid = request.POST.get('cardid', '')
 
 				url = "https://api.mercadopago.com/v1/customers/" + customer.idmercadopago +"/cards/"+ cardid + "?access_token=" + settings.MP_ACCESS_TOKEN
 
