@@ -19,6 +19,13 @@ class CustomerList(generics.CreateAPIView):
 	queryset = Customer.objects.all()
 	serializer_class = CustomerSerializer
 
+	def create(self, request, *args, **kwargs):
+		try:
+			response = super().create(request, *args, **kwargs)
+			return returnResponse( request, response.data , True , 200 )
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500)
+
 # GET A SINGLE USER BY SEARCHING FOR PHONE
 class CustomerExist(generics.RetrieveAPIView):
 	queryset = Customer.objects.all()
