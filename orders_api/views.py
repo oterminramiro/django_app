@@ -1,11 +1,10 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.conf import settings
 from django.core import serializers
 
-import jwt
-import random
+import jwt, json, random
 
 from .serializers import ItemSerializer, CustomerSerializer, CustomerCodeSerializer, StoreSerializer, OrganizationSerializer, OrderSerializer, OrderItemLogSerializer
 from .models import Item, Customer, Store, Order, OrderItem, OrderItemLog, Organization
@@ -15,15 +14,17 @@ from twilio.rest import Client
 from utils.views import jwt_token, returnResponse
 
 
-# GET ALL USERS // POST FOR CREATE
-class CustomerList(generics.ListCreateAPIView):
+# POST FOR CREATE
+class CustomerList(generics.CreateAPIView):
 	queryset = Customer.objects.all()
 	serializer_class = CustomerSerializer
+
 # GET A SINGLE USER BY SEARCHING FOR PHONE
 class CustomerExist(generics.RetrieveAPIView):
 	queryset = Customer.objects.all()
 	serializer_class = CustomerSerializer
 	lookup_field = 'phone'
+
 # SEND CODE
 class CustomerCode(APIView):
 	def post(self,request):
@@ -31,15 +32,14 @@ class CustomerCode(APIView):
 			phone = request.data['phone']
 			customer = Customer.objects.filter(phone=phone).first()
 			if customer:
+
 				code = str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9)) + str(random.randrange(9))
 				data = {"customer": customer.id, "code": code}
 				serializer = CustomerCodeSerializer(data=data)
+
 				if (serializer.is_valid()):
 					serializer.save()
-
-					account_sid = 'AC31cdf95be63d7eebd7bb2d82233ba732'
-					auth_token = '792210800f4ce40b0a85bf8a30acc97d'
-					client = Client(account_sid, auth_token)
+					client = Client(settings.TWILIO_SID, settings.TWILIO_TOKEN)
 
 					message = client.messages.create(
 						body = "Tu codigo es " + str(code),
@@ -47,13 +47,14 @@ class CustomerCode(APIView):
 						to = "+549" + str(phone)
 					)
 
-					return Response('true')
+					return returnResponse( request, 'True' , True , 200 )
 				else:
-					return Response(serializer.errors)
+					return returnResponse( request, serializer.errors , False , 404 )
 			else:
-				return Response('Customer not found')
+				return returnResponse( request, 'Customer not found' , False , 404 )
 		except Exception as e:
-			return Response(str(e))
+			return returnResponse( request, str(e) , False , 500)
+
 # LOGIN AND JWT RESPONSE
 class CustomerLogin(APIView):
 	def post(self,request):
@@ -64,41 +65,75 @@ class CustomerLogin(APIView):
 			if customer:
 				if code == 999999:
 					encoded_jwt = jwt.encode({'phone': phone,}, 'secret', algorithm='HS256')
-					return Response({'token':encoded_jwt,'phone':phone})
+					return returnResponse( request, {'token':encoded_jwt,'phone':phone} , True , 200 )
 				else:
-					customercode = CustomerCodeModel.objects.filter(code=code,customer=customer.id).first()
+					customercode = CustomerCodeModel.objects.filter(code=code,customer=customer.id).last()
 					if customercode:
 						encoded_jwt = jwt.encode({'phone': phone,}, 'secret', algorithm='HS256')
-						return Response({'token':encoded_jwt,'phone':phone})
+						return returnResponse( request, {'token':encoded_jwt,'phone':phone} , True , 200 )
 					else:
-						return Response('Code does not match')
+						return returnResponse( request, 'Code does not match' , False , 201 )
 			else:
-				return Response('Customer not found')
+				return returnResponse( request, 'Customer not found' , False , 404 )
 		except Exception as e:
-			return Response(str(e))
+			return returnResponse( request, str(e) , False , 500)
 
-class CustomerEdit(generics.UpdateAPIView):
-	queryset = Customer.objects.all()
-	serializer_class = CustomerSerializer
-	lookup_field = 'phone'
+class CustomerEdit(APIView):
+	def post(self,request):
+		try:
+			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
+		except Exception as e:
+			return returnResponse( request, str(e) , False , 500)
+
+		customer = Customer.objects.filter(phone=token['phone']).first()
+
+		if customer:
+			try:
+				request_data = request.data
+				if 'name' in request_data:
+					customer.name = request_data['name']
+				if 'lastname' in request_data:
+					customer.lastname = request_data['lastname']
+				if 'email' in request_data:
+					customer.email = request_data['email']
+				if 'birthday' in request_data:
+					customer.birthday = request_data['birthday']
+
+				customer.save()
+
+				response = {
+					'name': customer.name,
+					'lastname': customer.lastname,
+					'email': customer.email,
+					'birthday': customer.birthday,
+				}
+
+				return returnResponse( request, response , True , 200 )
+			except Exception as e:
+				return returnResponse( request, str(e) , False , 500)
+
+		else:
+			return returnResponse( request, 'Customer not found' , False , 404 )
+
+		return returnResponse( request, 'Server error' , False , 500 )
 
 class CustomerOrder(generics.ListAPIView):
 	def get(self,request):
 		try:
 			token = jwt.decode(request.headers['x-auth-token'], 'secret', algorithms=['HS256'])
 		except Exception as e:
-			return Response(str(e))
+			return returnResponse( request, str(e) , False , 500)
 
 		customer = Customer.objects.filter(phone=token['phone']).first()
 
 		if customer:
 			queryset = Order.objects.filter(customer_id = customer.id)
 			serializer = OrderSerializer(queryset, many=True)
-			return Response(serializer.data)
+			return returnResponse( request, serializer.data , True , 200 )
 		else:
-			return Response('Customer not found')
+			return returnResponse( request, 'Customer not found' , False , 404 )
 
-		return Response('server error')
+		return returnResponse( request, 'Server error' , False , 500 )
 
 
 
@@ -207,7 +242,7 @@ class OrderCreate(APIView):
 
 					order.amount = price_item_total
 					order.save()
-					return returnResponse( request, order.code , true , 200 )
+					return returnResponse( request, order.code , True , 200 )
 			else:
 				return returnResponse( request, 'Post data null' , False , 400 )
 		else:
