@@ -46,7 +46,8 @@ var Layout = (function() {
         })
     }
 
-    if($(window).width() < 1200){
+
+	if($(window).width() < 1200){
       $('body').removeClass('g-sidenav-hide').addClass('g-sidenav-hidden');
       $('body').removeClass('g-sidenav-show');
       $(window).resize(function() {
@@ -55,6 +56,8 @@ var Layout = (function() {
           }
       })
     }
+
+
 
 
 
