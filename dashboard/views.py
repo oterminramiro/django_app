@@ -12,4 +12,4 @@ def main(request):
 
 	context = {'store_count': store_count, 'item_count': item_count, 'customer_count': customer_count, 'order_count': order_count}
 
-	return render(request, 'dashboard/index_content.html', context)
+	return render(request, 'dashboard/dashboard.html', context)
