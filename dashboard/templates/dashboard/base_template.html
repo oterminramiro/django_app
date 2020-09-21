@@ -19,7 +19,6 @@
 </head>
 
 <body>
-
 	<!-- Sidenav -->
 	<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
 		<div class="scrollbar-inner">
@@ -59,18 +58,22 @@
 					</h6>
 					<!-- Navigation -->
 					<ul class="navbar-nav mb-md-3">
+						{% if user.role.name == "ADMIN" %}
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/organization_show">
 								<i class="ni ni-building"></i>
 								<span class="nav-link-text">Organization</span>
 							</a>
 						</li>
+						{% endif %}
+						{% if user.role.name != "SELLER" %}
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/store_show">
 								<i class="ni ni-shop"></i>
 								<span class="nav-link-text">Stores</span>
 							</a>
 						</li>
+						{% endif %}
 						<li class="nav-item">
 							<a class="nav-link" href="/backoffice/item_show">
 								<i class="ni ni-bag-17"></i>
@@ -78,6 +81,7 @@
 							</a>
 						</li>
 					</ul>
+					{% if user.role.name != "SELLER" %}
 					<!-- Divider -->
 					<hr class="my-3">
 					<!-- Heading -->
@@ -93,6 +97,7 @@
 							</a>
 							<div class="collapse" id="navbar-dashboards" style="">
 								<ul class="nav nav-sm flex-column">
+									{% if user.role.name == "ADMIN" %}
 									<li class="nav-item">
 										<a href="/backoffice/owner_show" class="nav-link">
 											<span class="sidenav-normal"> Owners </span>
@@ -103,6 +108,7 @@
 											<span class="sidenav-normal"> Sellers </span>
 										</a>
 									</li>
+									{% endif %}
 								</ul>
 							</div>
 						</li>
@@ -119,6 +125,8 @@
 							</a>
 						</li>
 					</ul>
+
+					{% endif %}
 				</div>
 			</div>
 		</div>

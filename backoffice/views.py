@@ -1,24 +1,23 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import Http404
 from orders_api.models import Status, Organization, Store, Item, Order, OrderItem, OrderItemLog, Customer
 from users.models import User, UserOrganization
 from .forms import OrganizationForm, StoreForm, ItemForm, UserForm, UserEditForm, UserOrgAddForm
 
-from utils.views import is_auth, check_role
+from utils.views import is_auth, check_role, check_role_and_auth
 
 class OrganizationCrud(object):
 
 	def organization_show(request):
 
-		checkrole = check_role(request,['SELLER','ADMIN'])
-		#raise Exception(checkrole)
 
-		if not (is_auth(request)): return redirect('/users/login')
+		check_role_and_auth(request,['ADMIN'])
 		organization = Organization.objects.all().order_by('id')
 		return render(request,"backoffice/organization/show.html",{'organizations':organization})
 
 	def organization_add(request):
-		if not (is_auth(request)): return redirect('/users/login')
+		check_role_and_auth(request,['ADMIN'])
 		if request.method == "POST":
 			form = OrganizationForm(request.POST, request.FILES)
 			if form.is_valid():
@@ -33,7 +32,7 @@ class OrganizationCrud(object):
 		return render(request,'backoffice/organization/add.html',{'form':form})
 
 	def organization_edit(request, id):
-		if not (is_auth(request)): return redirect('/users/login')
+		check_role_and_auth(request,['ADMIN'])
 		organization = Organization.objects.get(id=id)
 
 		if request.method == "POST":
@@ -49,7 +48,7 @@ class OrganizationCrud(object):
 		return render(request,'backoffice/organization/edit.html', context)
 
 	def organization_destroy(request, id):
-		if not (is_auth(request)): return redirect('/users/login')
+		check_role_and_auth(request,['ADMIN'])
 		organization = Organization.objects.get(id=id)
 		try:
 			delete = organization.delete()
@@ -60,8 +59,7 @@ class OrganizationCrud(object):
 class StoreCrud(object):
 
 	def store_show(request, orgid = None):
-		if not (is_auth(request)): return redirect('/users/login')
-
+		check_role_and_auth(request,['ADMIN','OWNER'])
 		if(orgid != None):
 			stores = Store.objects.filter(organization = orgid).order_by('id')
 		else:
@@ -70,7 +68,7 @@ class StoreCrud(object):
 
 	def store_add(request, orgid = None):
 
-		if not (is_auth(request)): return redirect('/users/login')
+		check_role_and_auth(request,['ADMIN','OWNER'])
 		if request.method == "POST":
 
 			if(orgid != None):
@@ -94,8 +92,7 @@ class StoreCrud(object):
 
 	def store_edit(request, id):
 
-		if not (is_auth(request)): return redirect('/users/login')
-
+		check_role_and_auth(request,['ADMIN','OWNER'])
 		store = Store.objects.get(id=id)
 		orgid = store.organization.id
 
@@ -118,8 +115,7 @@ class StoreCrud(object):
 
 	def store_destroy(request, id):
 
-		if not (is_auth(request)): return redirect('/users/login')
-
+		check_role_and_auth(request,['ADMIN','OWNER'])
 		store = Store.objects.get(id=id)
 		orgid = store.organization.id
 

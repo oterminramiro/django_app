@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import status
 from orders_api.models import Customer
+from django.http import Http404
 import jwt
 import json
 
@@ -29,7 +30,19 @@ def check_role(request,roles):
 		if role == request.user.role.name:
 			return True
 
-	return False
+	#return False
+	raise Http404("Not allowed")
+
+def check_role_and_auth(request,roles):
+	if request.user.is_authenticated:
+		for role in roles:
+			if role == request.user.role.name:
+				return True
+
+		#return False
+		raise Http404("Not allowed")
+	else:
+		 return redirect('/users/login')
 
 def returnResponse(request, data, status, code):
 	response = {
