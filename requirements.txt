@@ -1,5 +1,5 @@
 Django==3.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 psycopg2-binary>=2.8
 twilio==6.44.0
 djangorestframework-jwt==1.11.0
